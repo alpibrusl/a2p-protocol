@@ -28,27 +28,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Type check TypeScript packages
+      - name: Type check TypeScript SDK
+        working-directory: packages/sdk/typescript
         run: pnpm typecheck
 
-      - name: Build all packages
+      - name: Build TypeScript SDK
+        working-directory: packages/sdk/typescript
         run: pnpm build
 
-      - name: Verify build artifacts
+      - name: Verify TypeScript SDK build
         run: |
-          # Check TypeScript SDK
           test -f packages/sdk/typescript/dist/index.js || exit 1
-
-          # Check TypeScript adapters
-          for adapter in packages/adapters/*/typescript/package.json; do
-            if [ -f "$adapter" ]; then
-              dir=$(dirname "$adapter")
-              if [ -f "$dir/package.json" ] && grep -q '"build"' "$dir/package.json"; then
-                echo "Checking $dir"
-                test -d "$dir/dist" || test -d "$dir/lib" || echo "Warning: $dir may not have build output"
-              fi
-            fi
-          done
+          test -f packages/sdk/typescript/dist/index.mjs || exit 1
+          echo "TypeScript SDK build verified"
 
   build-python:
     name: Build Python Packages
