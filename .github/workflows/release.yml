@@ -83,7 +83,7 @@ jobs:
           name: typescript-dist
           path: packages/sdk/typescript/dist/
 
-      - name: Publish to npm (Trusted Publishing)
+      - name: Publish to npm (Trusted Publishing / OIDC)
         working-directory: packages/sdk/typescript
         run: |
           # Check if version already exists
@@ -93,8 +93,6 @@ jobs:
           else
             npm publish --access public --provenance
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-pypi:
     name: Publish to PyPI
