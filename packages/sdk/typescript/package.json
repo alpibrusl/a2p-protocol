@@ -1,5 +1,5 @@
 {
-  "name": "@a2p/sdk",
+  "name": "a2p-sdk",
   "version": "0.1.0",
   "description": "TypeScript SDK for the a2p (Agent 2 Profile) protocol",
   "main": "dist/index.js",
