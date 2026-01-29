@@ -31,6 +31,8 @@
   --a2p-hero-subtitle: #4c1d95;
   --a2p-card-bg: #ffffff;
   --a2p-card-border: rgba(124, 58, 237, 0.15);
+  --a2p-text-color: #1e1b4b;
+  --a2p-text-muted: #4c1d95;
 }
 
 /* Dark mode adjustments */
@@ -45,6 +47,8 @@
   --a2p-hero-subtitle: rgba(255, 255, 255, 0.8);
   --a2p-card-bg: var(--a2p-bg-card);
   --a2p-card-border: rgba(124, 58, 237, 0.2);
+  --a2p-text-color: #ffffff;
+  --a2p-text-muted: rgba(255, 255, 255, 0.7);
 }
 
 /* Hero section */
@@ -353,6 +357,11 @@
   margin-bottom: 0.5rem;
 }
 
+.feature p {
+  color: var(--a2p-text-color);
+  margin: 0;
+}
+
 /* How it works section */
 .how-it-works {
   display: grid;
@@ -367,6 +376,16 @@
   border-radius: 0.75rem;
   padding: 1.5rem;
   position: relative;
+}
+
+.step h4 {
+  color: var(--a2p-primary);
+  margin-top: 0.5rem;
+}
+
+.step p {
+  color: var(--a2p-text-color);
+  margin: 0;
 }
 
 .step-number {
@@ -441,6 +460,7 @@
 .compliance-item ul {
   margin-bottom: 0;
   padding-left: 1.25rem;
+  color: var(--a2p-text-color);
 }
 
 /* Open source section */
@@ -462,6 +482,11 @@
 .license h4, .location h4 {
   margin-top: 0;
   color: var(--a2p-primary);
+}
+
+.license p, .location p {
+  color: var(--a2p-text-color);
+  margin: 0;
 }
 
 /* CTA buttons */
