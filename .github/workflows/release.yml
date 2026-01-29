@@ -83,9 +83,16 @@ jobs:
           name: typescript-dist
           path: packages/sdk/typescript/dist/
 
-      - name: Publish to npm with provenance
+      - name: Publish to npm (Trusted Publishing)
         working-directory: packages/sdk/typescript
-        run: npm publish --access public --provenance
+        run: |
+          # Check if version already exists
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          if npm view @a2p/sdk@$PACKAGE_VERSION > /dev/null 2>&1; then
+            echo "Version $PACKAGE_VERSION already published, skipping..."
+          else
+            npm publish --access public --provenance
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

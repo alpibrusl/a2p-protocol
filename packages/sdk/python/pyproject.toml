@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "a2p-sdk"
-version = "0.1.1"
+version = "0.1.2"
 description = "Python SDK for the a2p (Agent 2 Profile) protocol"
 readme = "README.md"
 license = "EUPL-1.2"
