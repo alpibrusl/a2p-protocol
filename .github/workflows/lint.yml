@@ -62,5 +62,4 @@ jobs:
 
       - name: Check Markdown linting
         run: |
-          pip install markdownlint-cli2
-          markdownlint-cli2 "**/*.md" || echo "Markdown linting issues found"
+          npx markdownlint-cli2 "**/*.md" --ignore node_modules --ignore .internal-docs || echo "Markdown linting issues found"

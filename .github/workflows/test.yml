@@ -34,12 +34,12 @@ jobs:
       - name: Run TypeScript SDK tests with coverage
         if: matrix.node-version == 20
         working-directory: packages/sdk/typescript
-        run: pnpm test:coverage --run
+        run: pnpm exec vitest run --coverage
 
       - name: Run TypeScript SDK tests
         if: matrix.node-version != 20
         working-directory: packages/sdk/typescript
-        run: pnpm test --run
+        run: pnpm exec vitest run
 
       - name: Upload coverage reports
         if: matrix.node-version == 20
@@ -95,14 +95,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-python
-          path: packages/sdk/python/coverage/
+          path: |
+            packages/sdk/python/coverage.json
+            packages/sdk/python/htmlcov/
           retention-days: 7
 
       - name: Upload to Codecov
         if: matrix.python-version == '3.11'
         uses: codecov/codecov-action@v4
         with:
-          files: packages/sdk/python/coverage/coverage.json
+          files: packages/sdk/python/coverage.json
           flags: python
           name: python-coverage
           fail_ci_if_error: false
@@ -140,19 +142,21 @@ jobs:
       - name: Run adapter tests
         run: |
           # Test TypeScript adapters
-          for adapter in packages/adapter-*/package.json; do
+          for adapter in packages/adapters/*/typescript/package.json; do
             if [ -f "$adapter" ]; then
               dir=$(dirname "$adapter")
               echo "Testing $dir"
-              cd "$dir" && pnpm test --run || true
+              cd "$dir" && pnpm exec vitest run || true
+              cd - > /dev/null
             fi
           done
 
           # Test Python adapters
-          for adapter in packages/adapter-*/pyproject.toml; do
+          for adapter in packages/adapters/*/python/pyproject.toml; do
             if [ -f "$adapter" ]; then
               dir=$(dirname "$adapter")
               echo "Testing $dir"
               cd "$dir" && pip install -e . && pytest tests/ -v || true
+              cd - > /dev/null
             fi
           done

@@ -13,13 +13,10 @@ import type {
   Memory,
   SubProfile,
   ConsentPolicy,
-  Proposal,
-  ProfileSettings,
   DID,
-  SensitivityLevel,
 } from '../types';
 import { generateUserDid, generateMemoryId, generatePolicyId, isValidDid } from '../utils/id';
-import { filterScopes, getScopeSensitivity } from '../utils/scope';
+import { getScopeSensitivity } from '../utils/scope';
 
 /**
  * Options for creating a new profile

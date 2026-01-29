@@ -9,7 +9,6 @@ import type {
   Proposal,
   ProposalStatus,
   ProposalAction,
-  ProposedMemory,
   ProposalEvidence,
   Memory,
   DID,

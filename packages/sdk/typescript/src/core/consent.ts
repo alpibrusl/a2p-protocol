@@ -13,7 +13,7 @@ import type {
   AgentProfile,
 } from '../types';
 import { generateReceiptId, generatePolicyId } from '../utils/id';
-import { filterScopes, scopeMatches } from '../utils/scope';
+import { filterScopes } from '../utils/scope';
 
 /**
  * Evaluate if an agent has access based on policies

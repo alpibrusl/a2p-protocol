@@ -9,7 +9,6 @@ import type {
   AgentProfile,
   Memory,
   Proposal,
-  ConsentReceipt,
   DID,
   A2PClientConfig,
   ProfileAccessRequest,
@@ -18,7 +17,6 @@ import type {
   MemoryProposalResponse,
   PermissionLevel,
   SensitivityLevel,
-  ProposalEvidence,
 } from './types';
 import { createProfile, getFilteredProfile, addMemory, validateProfile } from './core/profile';
 import { createProposal, addProposal, approveProposal, rejectProposal } from './core/proposal';
