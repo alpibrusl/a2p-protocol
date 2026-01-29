@@ -45,11 +45,13 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Build all packages
+      - name: Build TypeScript SDK
+        working-directory: packages/sdk/typescript
         run: pnpm build
 
-      - name: Run tests
-        run: pnpm test
+      - name: Run TypeScript SDK tests
+        working-directory: packages/sdk/typescript
+        run: pnpm exec vitest run
 
       - name: Publish TypeScript packages to npm
         working-directory: packages/sdk/typescript

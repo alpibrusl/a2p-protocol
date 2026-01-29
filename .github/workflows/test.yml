@@ -62,6 +62,7 @@ jobs:
     name: Test Python SDK
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12']
     steps:
@@ -83,7 +84,9 @@ jobs:
       - name: Run Python SDK tests with coverage
         if: matrix.python-version == '3.11'
         working-directory: packages/sdk/python
-        run: pytest tests/ --cov=src/a2p --cov-report=json --cov-report=html --cov-report=term -v
+        run: |
+          mkdir -p coverage
+          pytest tests/ --cov=src/a2p --cov-report=json:coverage/coverage.json --cov-report=html:coverage/html --cov-report=term -v
 
       - name: Run Python SDK tests
         if: matrix.python-version != '3.11'
@@ -96,15 +99,14 @@ jobs:
         with:
           name: coverage-python
           path: |
-            packages/sdk/python/coverage.json
-            packages/sdk/python/htmlcov/
+            packages/sdk/python/coverage/
           retention-days: 7
 
       - name: Upload to Codecov
         if: matrix.python-version == '3.11'
         uses: codecov/codecov-action@v4
         with:
-          files: packages/sdk/python/coverage.json
+          files: packages/sdk/python/coverage/coverage.json
           flags: python
           name: python-coverage
           fail_ci_if_error: false

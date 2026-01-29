@@ -45,12 +45,12 @@
   "license": "EUPL-1.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/a2p-protocol/a2p.git",
-    "directory": "packages/sdk-typescript"
+    "url": "https://github.com/alpibrusl/a2p-protocol.git",
+    "directory": "packages/sdk/typescript"
   },
-  "homepage": "https://a2p.protocol",
+  "homepage": "https://alpibrusl.github.io/a2p-protocol",
   "bugs": {
-    "url": "https://github.com/a2p-protocol/a2p/issues"
+    "url": "https://github.com/alpibrusl/a2p-protocol/issues"
   },
   "engines": {
     "node": ">=18.0.0"

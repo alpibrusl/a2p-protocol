@@ -50,10 +50,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://a2p.protocol"
-Documentation = "https://docs.a2p.protocol"
-Repository = "https://github.com/a2p-protocol/a2p"
-Issues = "https://github.com/a2p-protocol/a2p/issues"
+Homepage = "https://alpibrusl.github.io/a2p-protocol"
+Documentation = "https://alpibrusl.github.io/a2p-protocol"
+Repository = "https://github.com/alpibrusl/a2p-protocol"
+Issues = "https://github.com/alpibrusl/a2p-protocol/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/a2p"]

@@ -1,0 +1,27 @@
+# Gitleaks configuration for a2p Protocol
+# https://github.com/gitleaks/gitleaks
+
+title = "a2p Protocol Gitleaks Config"
+
+[extend]
+useDefault = true
+
+# Allowed paths
+[allowlist]
+paths = [
+    '''\.secrets\.baseline$''',
+    '''pnpm-lock\.yaml$''',
+    '''package-lock\.json$''',
+    '''\.md$''',
+]
+
+# Allowed patterns (false positives)
+regexes = [
+    # Example DIDs
+    '''did:a2p:(user|agent):local:[a-z\-]+''',
+    # Google Analytics placeholder
+    '''G-XXXXXXXXXX''',
+    # Test/example tokens
+    '''test-token''',
+    '''example-key''',
+]
