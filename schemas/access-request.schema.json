@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/access-request.json",
+  "title": "A2P Access Request",
+  "description": "Request for accessing user profile data with GDPR-compliant purpose specification",
+  "type": "object",
+  "required": [
+    "requestId",
+    "agentDid",
+    "userDid",
+    "scopes",
+    "purpose",
+    "timestamp"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string",
+      "pattern": "^req_[a-zA-Z0-9]{16,32}$",
+      "description": "Unique request identifier"
+    },
+    "agentDid": {
+      "type": "string",
+      "pattern": "^did:",
+      "description": "DID of the requesting agent"
+    },
+    "userDid": {
+      "type": "string",
+      "pattern": "^did:",
+      "description": "DID of the user whose profile is being accessed"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Requested access scopes (e.g., 'a2p:preferences', 'a2p:interests')"
+    },
+    "purpose": {
+      "$ref": "#/$defs/purpose"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Request timestamp (ISO 8601)"
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9]{16,32}$",
+      "description": "Unique nonce for replay protection"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Request expiration time"
+    },
+    "subProfile": {
+      "type": "string",
+      "description": "Specific sub-profile to access (optional)"
+    },
+    "context": {
+      "$ref": "#/$defs/requestContext"
+    },
+    "signature": {
+      "$ref": "#/$defs/signature"
+    }
+  },
+  "$defs": {
+    "purpose": {
+      "type": "object",
+      "required": [
+        "type",
+        "description",
+        "legalBasis"
+      ],
+      "description": "GDPR-compliant purpose specification (Article 5)",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "personalization",
+            "context_enrichment",
+            "recommendation",
+            "analysis",
+            "communication",
+            "service_delivery",
+            "research",
+            "legal_compliance",
+            "other"
+          ],
+          "description": "Primary purpose category"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Human-readable description of how data will be used"
+        },
+        "legalBasis": {
+          "type": "string",
+          "enum": [
+            "consent",
+            "contract",
+            "legal_obligation",
+            "vital_interests",
+            "public_task",
+            "legitimate_interests"
+          ],
+          "description": "GDPR Article 6 legal basis for processing"
+        },
+        "dataUses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "context_enrichment",
+              "response_generation",
+              "personalization",
+              "memory_proposal",
+              "analytics",
+              "model_training",
+              "service_improvement",
+              "research"
+            ]
+          },
+          "description": "Specific ways data will be used"
+        },
+        "retention": {
+          "type": "string",
+          "enum": [
+            "session_only",
+            "24h",
+            "7d",
+            "30d",
+            "1y",
+            "indefinite"
+          ],
+          "description": "How long accessed data will be retained"
+        },
+        "sharing": {
+          "type": "object",
+          "properties": {
+            "thirdParties": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether data may be shared with third parties"
+            },
+            "recipients": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "DIDs of potential data recipients"
+            },
+            "purpose": {
+              "type": "string",
+              "description": "Purpose of any third-party sharing"
+            }
+          }
+        },
+        "automated": {
+          "type": "object",
+          "properties": {
+            "decisionMaking": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether data is used for automated decision-making"
+            },
+            "profiling": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether data is used for profiling"
+            },
+            "significance": {
+              "type": "string",
+              "description": "Significance and consequences of automated processing"
+            }
+          },
+          "description": "GDPR Article 22 - Automated decision-making disclosure"
+        }
+      }
+    },
+    "requestContext": {
+      "type": "object",
+      "description": "Additional context about the request",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "Current session identifier"
+        },
+        "conversationId": {
+          "type": "string",
+          "description": "Conversation or interaction identifier"
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "Client user agent string"
+        },
+        "ipAddress": {
+          "type": "string",
+          "description": "Client IP address (may be hashed for privacy)"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Jurisdiction of the request (e.g., 'EU', 'US-CA')"
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "description": "Cryptographic signature of the request",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "enum": [
+            "Ed25519",
+            "secp256k1",
+            "ES256"
+          ],
+          "description": "Signature algorithm"
+        },
+        "value": {
+          "type": "string",
+          "description": "Base64-encoded signature"
+        },
+        "keyId": {
+          "type": "string",
+          "description": "Key identifier used for signing"
+        }
+      }
+    }
+  }
+}

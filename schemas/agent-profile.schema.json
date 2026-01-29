@@ -1,0 +1,692 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/agent-profile.json",
+  "title": "A2P Agent Profile",
+  "description": "Agent identity and a2p capabilities declaration",
+  "type": "object",
+  "required": [
+    "id",
+    "profileType",
+    "identity",
+    "operator",
+    "a2pSupport"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^did:",
+      "description": "Agent DID"
+    },
+    "profileType": {
+      "const": "agent",
+      "description": "Profile type (always 'agent' for agent profiles)"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9]+)?$",
+      "description": "Agent version"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "identity": {
+      "$ref": "#/$defs/agentIdentity"
+    },
+    "operator": {
+      "$ref": "#/$defs/operator"
+    },
+    "a2pSupport": {
+      "$ref": "#/$defs/a2pSupport"
+    },
+    "trustMetrics": {
+      "$ref": "#/$defs/trustMetrics"
+    },
+    "capabilities": {
+      "$ref": "#/$defs/capabilities"
+    },
+    "aiActCompliance": {
+      "$ref": "#/$defs/aiActCompliance"
+    },
+    "verifiableCredentials": {
+      "$ref": "#/$defs/verifiableCredentials"
+    }
+  },
+  "$defs": {
+    "agentIdentity": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "description": "Agent identity information",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Agent name"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Agent description"
+        },
+        "shortDescription": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Brief one-line description"
+        },
+        "version": {
+          "type": "string",
+          "description": "Agent version string"
+        },
+        "icon": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to agent icon"
+        },
+        "banner": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to agent banner image"
+        },
+        "homepage": {
+          "type": "string",
+          "format": "uri",
+          "description": "Agent homepage"
+        },
+        "documentation": {
+          "type": "string",
+          "format": "uri",
+          "description": "Link to documentation"
+        },
+        "a2aCard": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to A2A Agent Card (/.well-known/agent.json)"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Agent categories/tags"
+        }
+      }
+    },
+    "operator": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "description": "Agent operator (company/individual running the agent)",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Operator name"
+        },
+        "did": {
+          "type": "string",
+          "pattern": "^did:",
+          "description": "Operator DID"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Legal jurisdiction (e.g., 'EU', 'US-CA')"
+        },
+        "address": {
+          "type": "object",
+          "properties": {
+            "country": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            }
+          }
+        },
+        "contact": {
+          "type": "string",
+          "description": "Contact email for privacy/data questions"
+        },
+        "dpo": {
+          "type": "string",
+          "description": "Data Protection Officer contact (for EU)"
+        },
+        "privacyPolicy": {
+          "type": "string",
+          "format": "uri",
+          "description": "Privacy policy URL"
+        },
+        "termsOfService": {
+          "type": "string",
+          "format": "uri",
+          "description": "Terms of service URL"
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Whether operator identity is verified"
+        },
+        "verifiedBy": {
+          "type": "string",
+          "description": "Entity that verified the operator"
+        }
+      }
+    },
+    "a2pSupport": {
+      "type": "object",
+      "required": [
+        "protocolVersion"
+      ],
+      "description": "a2p protocol support declaration",
+      "properties": {
+        "protocolVersion": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$",
+          "description": "Supported a2p protocol version"
+        },
+        "capabilities": {
+          "type": "object",
+          "properties": {
+            "canReadProfiles": {
+              "type": "boolean",
+              "default": true,
+              "description": "Can read user profiles"
+            },
+            "canProposeMemories": {
+              "type": "boolean",
+              "default": true,
+              "description": "Can propose new memories"
+            },
+            "canWriteMemories": {
+              "type": "boolean",
+              "default": false,
+              "description": "Can directly write memories (rare)"
+            },
+            "supportsSubProfiles": {
+              "type": "boolean",
+              "default": true,
+              "description": "Supports sub-profile selection"
+            },
+            "supportsConsentReceipts": {
+              "type": "boolean",
+              "default": true,
+              "description": "Can receive/store consent receipts"
+            }
+          }
+        },
+        "requestedScopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Scopes typically requested by this agent"
+        },
+        "requiredScopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Minimum scopes needed to function"
+        },
+        "supportedCategories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Categories this agent can use meaningfully"
+        },
+        "dataRetention": {
+          "type": "object",
+          "properties": {
+            "sessionData": {
+              "type": "string",
+              "description": "How long session data is kept (e.g., '24h', 'session')"
+            },
+            "persistentData": {
+              "type": "string",
+              "description": "Persistent data retention ('none', '30d', etc.)"
+            },
+            "logs": {
+              "type": "string",
+              "description": "Log retention period"
+            }
+          }
+        },
+        "endpoints": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "format": "uri",
+              "description": "Endpoint for profile requests"
+            },
+            "proposals": {
+              "type": "string",
+              "format": "uri",
+              "description": "Endpoint for proposal submissions"
+            },
+            "webhooks": {
+              "type": "string",
+              "format": "uri",
+              "description": "Webhook endpoint for notifications"
+            }
+          }
+        }
+      }
+    },
+    "trustMetrics": {
+      "type": "object",
+      "description": "Trust and verification metrics",
+      "properties": {
+        "verifiedOperator": {
+          "type": "boolean",
+          "description": "Operator identity verified"
+        },
+        "securityAudit": {
+          "type": "object",
+          "properties": {
+            "auditor": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "report": {
+              "type": "string",
+              "format": "uri"
+            },
+            "level": {
+              "type": "string",
+              "enum": [
+                "basic",
+                "standard",
+                "comprehensive"
+              ]
+            }
+          }
+        },
+        "privacyAudit": {
+          "type": "object",
+          "properties": {
+            "auditor": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "gdprCompliant": {
+              "type": "boolean"
+            },
+            "ccpaCompliant": {
+              "type": "boolean"
+            }
+          }
+        },
+        "communityScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Community rating (0-5)"
+        },
+        "communityReviews": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of community reviews"
+        },
+        "certifications": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Certifications held"
+        },
+        "incidentHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "type": {
+                "type": "string"
+              },
+              "resolved": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Security/privacy incident history"
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "description": "Agent capabilities (complementary to A2A card)",
+      "properties": {
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Domains the agent operates in"
+        },
+        "languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Supported languages"
+        },
+        "modalities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "text",
+              "voice",
+              "image",
+              "video",
+              "code"
+            ]
+          },
+          "description": "Supported interaction modalities"
+        },
+        "integrations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Platform integrations"
+        }
+      }
+    },
+    "aiActCompliance": {
+      "type": "object",
+      "description": "EU AI Act (Regulation 2024/1689) compliance information",
+      "properties": {
+        "riskLevel": {
+          "type": "string",
+          "enum": [
+            "minimal",
+            "limited",
+            "high",
+            "unacceptable"
+          ],
+          "description": "AI Act risk classification (Article 6)"
+        },
+        "systemType": {
+          "type": "string",
+          "description": "Type of AI system as per AI Act Annex III"
+        },
+        "intendedPurpose": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Intended purpose of the AI system"
+        },
+        "transparencyObligations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "user_notification",
+              "ai_generated_content_marking",
+              "capability_disclosure",
+              "emotion_recognition_disclosure",
+              "biometric_categorization_disclosure",
+              "deep_fake_disclosure"
+            ]
+          },
+          "description": "Applicable transparency obligations (Article 52)"
+        },
+        "humanOversight": {
+          "type": "object",
+          "description": "Human oversight measures (Article 14)",
+          "properties": {
+            "required": {
+              "type": "boolean",
+              "description": "Whether human oversight is required"
+            },
+            "mechanism": {
+              "type": "string",
+              "enum": [
+                "human_in_the_loop",
+                "human_on_the_loop",
+                "human_in_command"
+              ],
+              "description": "Type of human oversight"
+            },
+            "description": {
+              "type": "string",
+              "description": "Description of oversight measures"
+            },
+            "interventionCapability": {
+              "type": "boolean",
+              "description": "Can human intervene or override"
+            }
+          }
+        },
+        "conformityAssessment": {
+          "type": "object",
+          "description": "Conformity assessment information (Article 43)",
+          "properties": {
+            "completed": {
+              "type": "boolean",
+              "description": "Whether assessment has been completed"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "self_assessment",
+                "third_party",
+                "notified_body"
+              ],
+              "description": "Type of conformity assessment"
+            },
+            "assessor": {
+              "type": "string",
+              "description": "Name of assessing entity"
+            },
+            "assessorDid": {
+              "type": "string",
+              "pattern": "^did:",
+              "description": "DID of assessing entity"
+            },
+            "date": {
+              "type": "string",
+              "format": "date",
+              "description": "Assessment completion date"
+            },
+            "reportUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL to assessment report"
+            },
+            "validUntil": {
+              "type": "string",
+              "format": "date",
+              "description": "Assessment validity end date"
+            }
+          }
+        },
+        "technicalDocumentation": {
+          "type": "object",
+          "description": "Technical documentation (Article 11)",
+          "properties": {
+            "available": {
+              "type": "boolean"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "lastUpdated": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "recordKeeping": {
+          "type": "object",
+          "description": "Automatic logging capabilities (Article 12)",
+          "properties": {
+            "logsGenerated": {
+              "type": "boolean"
+            },
+            "logRetention": {
+              "type": "string",
+              "description": "Log retention period"
+            },
+            "logAccessUrl": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        },
+        "prohibitedPractices": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Confirmation that no prohibited practices (Article 5) are used"
+        },
+        "euRepresentative": {
+          "type": "object",
+          "description": "EU authorized representative (if operator outside EU)",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "contact": {
+              "type": "string"
+            }
+          }
+        },
+        "ceMarking": {
+          "type": "object",
+          "description": "CE marking information (Article 49)",
+          "properties": {
+            "affixed": {
+              "type": "boolean"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      }
+    },
+    "verifiableCredentials": {
+      "type": "object",
+      "description": "W3C Verifiable Credentials for agent certification",
+      "properties": {
+        "agentCredentials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/verifiableCredential"
+          },
+          "description": "Credentials held by the agent"
+        },
+        "operatorCredentials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/verifiableCredential"
+          },
+          "description": "Credentials held by the operator"
+        },
+        "credentialEndpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "Endpoint for credential verification"
+        }
+      }
+    },
+    "verifiableCredential": {
+      "type": "object",
+      "description": "W3C Verifiable Credential reference",
+      "required": [
+        "id",
+        "type",
+        "issuer"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "Credential identifier"
+        },
+        "type": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Credential type(s)"
+        },
+        "issuer": {
+          "type": "string",
+          "description": "Credential issuer DID"
+        },
+        "issuanceDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expirationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "credentialSubject": {
+          "type": "object",
+          "description": "Claims made by the credential"
+        },
+        "proof": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "created": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "verificationMethod": {
+              "type": "string"
+            },
+            "proofPurpose": {
+              "type": "string"
+            },
+            "proofValue": {
+              "type": "string"
+            }
+          }
+        },
+        "credentialStatus": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uri"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "description": "Credential revocation status check"
+        }
+      }
+    }
+  }
+}

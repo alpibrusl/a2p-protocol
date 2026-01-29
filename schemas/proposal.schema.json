@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/proposal.json",
+  "title": "A2P Memory Proposal",
+  "description": "Agent proposal for adding a memory to user profile",
+  "type": "object",
+  "required": [
+    "id",
+    "proposedBy",
+    "proposedAt",
+    "memory",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^prop_[a-zA-Z0-9]+$",
+      "description": "Unique proposal identifier"
+    },
+    "proposedBy": {
+      "type": "object",
+      "required": [
+        "agentDid"
+      ],
+      "description": "Agent that proposed the memory",
+      "properties": {
+        "agentDid": {
+          "type": "string",
+          "pattern": "^did:",
+          "description": "Agent DID"
+        },
+        "agentName": {
+          "type": "string",
+          "description": "Human-readable agent name"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Session identifier"
+        },
+        "conversationContext": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Brief context from the conversation"
+        }
+      }
+    },
+    "proposedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the proposal was created"
+    },
+    "memory": {
+      "type": "object",
+      "required": [
+        "content"
+      ],
+      "description": "Proposed memory content",
+      "properties": {
+        "content": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Memory content"
+        },
+        "category": {
+          "type": "string",
+          "pattern": "^(a2p|ext):[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*$",
+          "description": "Suggested category"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Agent's confidence in this memory"
+        },
+        "suggestedSensitivity": {
+          "type": "string",
+          "enum": [
+            "public",
+            "standard",
+            "sensitive",
+            "restricted"
+          ],
+          "description": "Suggested sensitivity level"
+        },
+        "suggestedScope": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Suggested sharing scope"
+        },
+        "suggestedTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Suggested tags"
+        }
+      }
+    },
+    "context": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Why the agent is proposing this memory"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "user_statement",
+              "inferred",
+              "confirmed",
+              "external"
+            ]
+          },
+          "quote": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Evidence supporting the proposed memory"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "expired",
+        "withdrawn"
+      ],
+      "description": "Current proposal status"
+    },
+    "resolution": {
+      "type": "object",
+      "description": "Resolution details (when reviewed)",
+      "properties": {
+        "resolvedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "approved",
+            "approved_with_edits",
+            "rejected",
+            "expired",
+            "withdrawn"
+          ]
+        },
+        "editedContent": {
+          "type": "string",
+          "description": "User-edited content (if approved_with_edits)"
+        },
+        "editedCategory": {
+          "type": "string",
+          "description": "User-selected category (if different)"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason for rejection"
+        },
+        "createdMemoryId": {
+          "type": "string",
+          "pattern": "^mem_[a-zA-Z0-9]+$",
+          "description": "ID of created memory (if approved)"
+        }
+      }
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the proposal expires if not reviewed"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high"
+      ],
+      "default": "normal",
+      "description": "Proposal priority for user review queue"
+    },
+    "similarTo": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs of similar existing memories"
+    }
+  }
+}

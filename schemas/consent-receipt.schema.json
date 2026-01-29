@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/consent-receipt.json",
+  "title": "A2P Consent Receipt",
+  "description": "Proof of consent grant for audit and compliance",
+  "type": "object",
+  "required": [
+    "receiptId",
+    "userDid",
+    "agentDid",
+    "grantedScopes",
+    "permissions",
+    "grantedAt"
+  ],
+  "properties": {
+    "receiptId": {
+      "type": "string",
+      "pattern": "^rcpt_[a-zA-Z0-9]+$",
+      "description": "Unique receipt identifier"
+    },
+    "userDid": {
+      "type": "string",
+      "pattern": "^did:",
+      "description": "User DID"
+    },
+    "agentDid": {
+      "type": "string",
+      "pattern": "^did:",
+      "description": "Agent DID"
+    },
+    "operatorDid": {
+      "type": "string",
+      "pattern": "^did:",
+      "description": "Agent operator DID"
+    },
+    "policyId": {
+      "type": "string",
+      "pattern": "^policy_[a-zA-Z0-9]+$",
+      "description": "Policy that granted this consent"
+    },
+    "grantedScopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Scopes granted access to"
+    },
+    "deniedScopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Scopes explicitly denied"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "read_public",
+          "read_scoped",
+          "read_full",
+          "propose",
+          "write"
+        ]
+      },
+      "description": "Granted permissions"
+    },
+    "subProfile": {
+      "type": "string",
+      "description": "Sub-profile this consent applies to"
+    },
+    "grantedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent was granted"
+    },
+    "expiresAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "When consent expires"
+    },
+    "revokedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "When consent was revoked (if applicable)"
+    },
+    "revokedReason": {
+      "type": "string",
+      "description": "Reason for revocation"
+    },
+    "consentMethod": {
+      "type": "string",
+      "enum": [
+        "policy_match",
+        "explicit_grant",
+        "one_time",
+        "session"
+      ],
+      "description": "How consent was obtained"
+    },
+    "purpose": {
+      "$ref": "#/$defs/grantedPurpose"
+    },
+    "legalBasis": {
+      "type": "string",
+      "enum": [
+        "consent",
+        "contract",
+        "legal_obligation",
+        "vital_interests",
+        "public_task",
+        "legitimate_interests"
+      ],
+      "description": "GDPR legal basis"
+    },
+    "dataSubjectRights": {
+      "type": "object",
+      "properties": {
+        "accessUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "rectificationUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "erasureUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "portabilityUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "objectionUrl": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "description": "URLs for exercising data subject rights"
+    },
+    "proof": {
+      "type": "object",
+      "description": "Cryptographic proof of consent",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "signature",
+            "hash",
+            "blockchain",
+            "none"
+          ]
+        },
+        "algorithm": {
+          "type": "string",
+          "description": "Signature algorithm used"
+        },
+        "hash": {
+          "type": "string",
+          "description": "Hash of consent data"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Cryptographic signature"
+        },
+        "signedBy": {
+          "type": "string",
+          "pattern": "^did:",
+          "description": "DID of signer"
+        },
+        "location": {
+          "type": "string",
+          "format": "uri",
+          "description": "Location of proof (e.g., IPFS, blockchain)"
+        },
+        "blockchainRef": {
+          "type": "object",
+          "properties": {
+            "chain": {
+              "type": "string"
+            },
+            "txHash": {
+              "type": "string"
+            },
+            "blockNumber": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "ipAddress": {
+          "type": "string",
+          "description": "IP address at time of consent (hashed for privacy)"
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "User agent at time of consent"
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      }
+    },
+    "accessLog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "read",
+              "propose",
+              "write"
+            ]
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requestId": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Log of accesses made under this consent"
+    }
+  },
+  "$defs": {
+    "grantedPurpose": {
+      "type": "object",
+      "required": [
+        "type",
+        "description",
+        "legalBasis"
+      ],
+      "description": "Purpose as declared in the access request and granted",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "personalization",
+            "context_enrichment",
+            "recommendation",
+            "analysis",
+            "communication",
+            "service_delivery",
+            "research",
+            "legal_compliance",
+            "other"
+          ],
+          "description": "Purpose type from access request"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Human-readable description of data use"
+        },
+        "legalBasis": {
+          "type": "string",
+          "enum": [
+            "consent",
+            "contract",
+            "legal_obligation",
+            "vital_interests",
+            "public_task",
+            "legitimate_interests"
+          ],
+          "description": "GDPR Article 6 legal basis"
+        },
+        "dataUses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Specific approved data uses"
+        },
+        "retention": {
+          "type": "string",
+          "description": "Approved retention period"
+        },
+        "thirdPartySharingApproved": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether third-party sharing was approved"
+        },
+        "automatedDecisionsApproved": {
+          "type": "boolean",
+          "description": "Whether automated decision-making was approved"
+        },
+        "profilingApproved": {
+          "type": "boolean",
+          "description": "Whether profiling was approved"
+        }
+      }
+    }
+  }
+}

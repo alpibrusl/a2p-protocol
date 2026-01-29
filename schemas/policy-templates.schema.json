@@ -1,0 +1,564 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/policy-templates.json",
+  "title": "A2P Policy Templates",
+  "description": "Predefined consent policy templates for common use cases",
+  "type": "object",
+  "properties": {
+    "templates": {
+      "type": "object",
+      "description": "Available policy templates",
+      "properties": {
+        "minimal": {
+          "$ref": "#/$defs/policyTemplate"
+        },
+        "balanced": {
+          "$ref": "#/$defs/policyTemplate"
+        },
+        "open": {
+          "$ref": "#/$defs/policyTemplate"
+        },
+        "work": {
+          "$ref": "#/$defs/policyTemplate"
+        },
+        "health": {
+          "$ref": "#/$defs/policyTemplate"
+        },
+        "custom": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/policyTemplate"
+          }
+        }
+      }
+    },
+    "defaultTemplate": {
+      "type": "string",
+      "default": "balanced",
+      "description": "Default template for new profiles"
+    }
+  },
+  "$defs": {
+    "policyTemplate": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "policies"
+      ],
+      "description": "A reusable policy template",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^tpl_[a-zA-Z0-9_]+$",
+          "description": "Template identifier"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Human-readable template name"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Template description"
+        },
+        "icon": {
+          "type": "string",
+          "description": "Icon identifier or emoji"
+        },
+        "privacyLevel": {
+          "type": "string",
+          "enum": [
+            "strict",
+            "balanced",
+            "permissive"
+          ],
+          "description": "Overall privacy stance"
+        },
+        "recommendedFor": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Use cases this template is recommended for"
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/templatePolicy"
+          },
+          "description": "Policies included in this template"
+        },
+        "autoApprove": {
+          "$ref": "#/$defs/autoApproveSettings"
+        },
+        "notifications": {
+          "$ref": "#/$defs/notificationSettings"
+        }
+      }
+    },
+    "templatePolicy": {
+      "type": "object",
+      "required": [
+        "name",
+        "agentPattern"
+      ],
+      "description": "A policy within a template",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Policy name"
+        },
+        "description": {
+          "type": "string"
+        },
+        "agentPattern": {
+          "type": "string",
+          "description": "Agent DID pattern"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "none",
+              "read_public",
+              "read_scoped",
+              "read_full",
+              "propose",
+              "write"
+            ]
+          }
+        },
+        "allow": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Allowed scopes"
+        },
+        "deny": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Denied scopes"
+        },
+        "conditions": {
+          "type": "object",
+          "properties": {
+            "requireVerifiedOperator": {
+              "type": "boolean"
+            },
+            "minTrustScore": {
+              "type": "number"
+            },
+            "requireAudit": {
+              "type": "boolean"
+            },
+            "allowedJurisdictions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maxDataRetention": {
+              "type": "string"
+            }
+          }
+        },
+        "purposeRequirements": {
+          "type": "object",
+          "properties": {
+            "allowedPurposes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maxRetention": {
+              "type": "string"
+            },
+            "allowThirdPartySharing": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "autoApproveSettings": {
+      "type": "object",
+      "description": "Settings for automatic proposal approval",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether auto-approve is enabled"
+        },
+        "minConfidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.9,
+          "description": "Minimum confidence for auto-approval"
+        },
+        "trustedAgentsOnly": {
+          "type": "boolean",
+          "default": true,
+          "description": "Only auto-approve from trusted agents"
+        },
+        "trustedAgents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DIDs of trusted agents"
+        },
+        "allowedCategories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Categories that can be auto-approved"
+        },
+        "deniedCategories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Categories that require manual approval"
+        },
+        "maxProposalsPerDay": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 10,
+          "description": "Maximum auto-approvals per day"
+        },
+        "requireReview": {
+          "type": "string",
+          "enum": [
+            "never",
+            "weekly",
+            "monthly"
+          ],
+          "default": "weekly",
+          "description": "Review period for auto-approved items"
+        }
+      }
+    },
+    "notificationSettings": {
+      "type": "object",
+      "description": "Notification preferences for the template",
+      "properties": {
+        "proposalReceived": {
+          "type": "boolean",
+          "default": true
+        },
+        "proposalAutoApproved": {
+          "type": "boolean",
+          "default": false
+        },
+        "accessGranted": {
+          "type": "boolean",
+          "default": false
+        },
+        "accessDenied": {
+          "type": "boolean",
+          "default": true
+        },
+        "policyViolation": {
+          "type": "boolean",
+          "default": true
+        },
+        "digestFrequency": {
+          "type": "string",
+          "enum": [
+            "realtime",
+            "daily",
+            "weekly",
+            "none"
+          ],
+          "default": "daily"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "templates": {
+        "minimal": {
+          "id": "tpl_minimal",
+          "name": "Minimal",
+          "description": "Maximum privacy with minimal sharing",
+          "icon": "\ud83d\udd12",
+          "privacyLevel": "strict",
+          "recommendedFor": [
+            "privacy-conscious users",
+            "sensitive contexts"
+          ],
+          "policies": [
+            {
+              "name": "Default Deny",
+              "agentPattern": "*",
+              "permissions": [
+                "none"
+              ],
+              "allow": [],
+              "deny": [
+                "*"
+              ]
+            },
+            {
+              "name": "Basic Preferences Only",
+              "agentPattern": "did:a2p:agent:*",
+              "permissions": [
+                "read_public"
+              ],
+              "allow": [
+                "a2p:preferences.language",
+                "a2p:preferences.timezone"
+              ],
+              "deny": [
+                "a2p:health.*",
+                "a2p:financial.*",
+                "a2p:relationships.*"
+              ],
+              "conditions": {
+                "requireVerifiedOperator": true
+              }
+            }
+          ],
+          "autoApprove": {
+            "enabled": false
+          },
+          "notifications": {
+            "proposalReceived": true,
+            "accessGranted": true,
+            "accessDenied": true,
+            "policyViolation": true,
+            "digestFrequency": "realtime"
+          }
+        },
+        "balanced": {
+          "id": "tpl_balanced",
+          "name": "Balanced",
+          "description": "Good privacy with useful personalization",
+          "icon": "\u2696\ufe0f",
+          "privacyLevel": "balanced",
+          "recommendedFor": [
+            "general use",
+            "most users"
+          ],
+          "policies": [
+            {
+              "name": "Verified Agents",
+              "agentPattern": "did:a2p:agent:*",
+              "permissions": [
+                "read_scoped",
+                "propose"
+              ],
+              "allow": [
+                "a2p:preferences.*",
+                "a2p:interests.*",
+                "a2p:context.*"
+              ],
+              "deny": [
+                "a2p:health.*",
+                "a2p:financial.*"
+              ],
+              "conditions": {
+                "requireVerifiedOperator": true,
+                "minTrustScore": 0.7,
+                "maxDataRetention": "30d"
+              },
+              "purposeRequirements": {
+                "allowedPurposes": [
+                  "personalization",
+                  "context_enrichment",
+                  "recommendation"
+                ],
+                "maxRetention": "30d",
+                "allowThirdPartySharing": false
+              }
+            }
+          ],
+          "autoApprove": {
+            "enabled": true,
+            "minConfidence": 0.9,
+            "trustedAgentsOnly": true,
+            "allowedCategories": [
+              "a2p:preferences.*",
+              "a2p:interests.*"
+            ],
+            "deniedCategories": [
+              "a2p:health.*",
+              "a2p:financial.*",
+              "a2p:relationships.*"
+            ],
+            "maxProposalsPerDay": 5,
+            "requireReview": "weekly"
+          },
+          "notifications": {
+            "proposalReceived": true,
+            "proposalAutoApproved": false,
+            "accessDenied": true,
+            "policyViolation": true,
+            "digestFrequency": "daily"
+          }
+        },
+        "open": {
+          "id": "tpl_open",
+          "name": "Open",
+          "description": "Maximum personalization with broad sharing",
+          "icon": "\ud83c\udf10",
+          "privacyLevel": "permissive",
+          "recommendedFor": [
+            "power users",
+            "maximum AI assistance"
+          ],
+          "policies": [
+            {
+              "name": "All Verified Agents",
+              "agentPattern": "*",
+              "permissions": [
+                "read_full",
+                "propose"
+              ],
+              "allow": [
+                "a2p:*",
+                "ext:*"
+              ],
+              "deny": [
+                "a2p:health.conditions",
+                "a2p:health.medications",
+                "a2p:financial.accounts"
+              ],
+              "conditions": {
+                "requireVerifiedOperator": false,
+                "minTrustScore": 0.5
+              }
+            }
+          ],
+          "autoApprove": {
+            "enabled": true,
+            "minConfidence": 0.7,
+            "trustedAgentsOnly": false,
+            "deniedCategories": [
+              "a2p:health.conditions",
+              "a2p:financial.*"
+            ],
+            "maxProposalsPerDay": 20,
+            "requireReview": "monthly"
+          },
+          "notifications": {
+            "proposalReceived": false,
+            "accessDenied": true,
+            "policyViolation": true,
+            "digestFrequency": "weekly"
+          }
+        },
+        "work": {
+          "id": "tpl_work",
+          "name": "Work Profile",
+          "description": "Optimized for professional contexts",
+          "icon": "\ud83d\udcbc",
+          "privacyLevel": "balanced",
+          "recommendedFor": [
+            "work sub-profiles",
+            "professional use"
+          ],
+          "policies": [
+            {
+              "name": "Work Agents",
+              "agentPattern": "did:a2p:agent:*",
+              "permissions": [
+                "read_scoped",
+                "propose"
+              ],
+              "allow": [
+                "a2p:professional.*",
+                "a2p:preferences.*",
+                "a2p:context.currentProjects"
+              ],
+              "deny": [
+                "a2p:health.*",
+                "a2p:relationships.*",
+                "a2p:interests.hobbies"
+              ],
+              "conditions": {
+                "requireVerifiedOperator": true,
+                "minTrustScore": 0.8
+              }
+            }
+          ],
+          "autoApprove": {
+            "enabled": true,
+            "minConfidence": 0.85,
+            "trustedAgentsOnly": true,
+            "allowedCategories": [
+              "a2p:professional.*",
+              "a2p:context.*"
+            ],
+            "maxProposalsPerDay": 10
+          }
+        },
+        "health": {
+          "id": "tpl_health",
+          "name": "Health Profile",
+          "description": "Strict controls for health data",
+          "icon": "\ud83c\udfe5",
+          "privacyLevel": "strict",
+          "recommendedFor": [
+            "health sub-profiles",
+            "medical contexts"
+          ],
+          "policies": [
+            {
+              "name": "Health Agents Only",
+              "agentPattern": "did:a2p:agent:local:health-*",
+              "permissions": [
+                "read_scoped"
+              ],
+              "allow": [
+                "a2p:health.*",
+                "a2p:preferences.accessibility"
+              ],
+              "deny": [
+                "a2p:financial.*",
+                "a2p:professional.*"
+              ],
+              "conditions": {
+                "requireVerifiedOperator": true,
+                "requireAudit": true,
+                "allowedJurisdictions": [
+                  "EU",
+                  "US-HIPAA"
+                ]
+              },
+              "purposeRequirements": {
+                "allowedPurposes": [
+                  "service_delivery",
+                  "legal_compliance"
+                ],
+                "maxRetention": "7d",
+                "allowThirdPartySharing": false
+              }
+            }
+          ],
+          "autoApprove": {
+            "enabled": false
+          },
+          "notifications": {
+            "proposalReceived": true,
+            "accessGranted": true,
+            "accessDenied": true,
+            "policyViolation": true,
+            "digestFrequency": "realtime"
+          }
+        }
+      },
+      "defaultTemplate": "balanced"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "a2p-google-adk"
+version = "1.0.0"
+description = "a2p Protocol adapter for Google Agent Development Kit (ADK)"
+readme = "README.md"
+license = "EUPL-1.2"
+requires-python = ">=3.10"
+authors = [
+    { name = "a2p Protocol Team" }
+]
+keywords = ["a2p", "google", "adk", "agents", "profiles", "multi-agent"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "a2p-sdk>=1.0.0",
+    "google-adk>=1.22.0",
+    "google-genai>=1.50.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/alpibrusl/a2p-protocol"
+Documentation = "https://alpibrusl.github.io/a2p-protocol"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/a2p_google_adk"]

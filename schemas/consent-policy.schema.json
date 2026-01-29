@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/consent-policy.json",
+  "title": "A2P Consent Policy",
+  "description": "Access control rules for agent access to profile",
+  "type": "object",
+  "required": [
+    "id",
+    "agentPattern",
+    "permissions"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^policy_[a-zA-Z0-9]+$",
+      "description": "Unique policy identifier"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Human-readable policy name"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Policy description"
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 100,
+      "description": "Policy priority (lower = higher priority)"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the policy is active"
+    },
+    "agentPattern": {
+      "type": "string",
+      "description": "Glob pattern for matching agent DIDs (e.g., 'did:a2p:agent:*')"
+    },
+    "agentDids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^did:"
+      },
+      "description": "Specific agent DIDs (alternative to pattern)"
+    },
+    "agentTags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Agent tags to match"
+    },
+    "operatorDids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^did:"
+      },
+      "description": "Match agents by operator DID"
+    },
+    "allow": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(a2p|ext):[a-zA-Z0-9_*]+(\\.[a-zA-Z0-9_*]+)*$"
+      },
+      "description": "Allowed scopes (supports wildcards)"
+    },
+    "deny": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(a2p|ext):[a-zA-Z0-9_*]+(\\.[a-zA-Z0-9_*]+)*$"
+      },
+      "description": "Denied scopes (takes precedence over allow)"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "none",
+          "read_public",
+          "read_scoped",
+          "read_full",
+          "propose",
+          "write"
+        ]
+      },
+      "description": "Granted permission levels"
+    },
+    "conditions": {
+      "$ref": "#/$defs/conditions"
+    },
+    "purposeRequirements": {
+      "$ref": "#/$defs/purposeRequirements"
+    },
+    "subProfile": {
+      "type": "string",
+      "description": "Restrict to specific sub-profile"
+    },
+    "expiry": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Policy expiration time"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "conditions": {
+      "type": "object",
+      "description": "Additional conditions for policy to apply",
+      "properties": {
+        "requireVerifiedOperator": {
+          "type": "boolean",
+          "default": false,
+          "description": "Agent operator must be verified"
+        },
+        "minTrustScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum agent trust score required"
+        },
+        "requireAudit": {
+          "type": "boolean",
+          "default": false,
+          "description": "Agent must have passed security audit"
+        },
+        "allowedJurisdictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Allowed operator jurisdictions"
+        },
+        "blockedJurisdictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Blocked operator jurisdictions"
+        },
+        "requireHttps": {
+          "type": "boolean",
+          "default": true,
+          "description": "Agent must use HTTPS endpoints"
+        },
+        "maxDataRetention": {
+          "type": "string",
+          "description": "Maximum data retention allowed (e.g., '24h', '7d')"
+        },
+        "timeOfDay": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "pattern": "^\\d{2}:\\d{2}$"
+            },
+            "end": {
+              "type": "string",
+              "pattern": "^\\d{2}:\\d{2}$"
+            },
+            "timezone": {
+              "type": "string"
+            }
+          },
+          "description": "Time-of-day restrictions"
+        },
+        "rateLimit": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "window": {
+              "type": "string"
+            }
+          },
+          "description": "Rate limiting for this policy"
+        }
+      }
+    },
+    "purposeRequirements": {
+      "type": "object",
+      "description": "Purpose requirements for access (GDPR Article 5 compliance)",
+      "properties": {
+        "allowedPurposes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "personalization",
+              "context_enrichment",
+              "recommendation",
+              "analysis",
+              "communication",
+              "service_delivery",
+              "research",
+              "legal_compliance",
+              "other"
+            ]
+          },
+          "description": "Purposes allowed under this policy"
+        },
+        "deniedPurposes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Purposes explicitly denied"
+        },
+        "allowedLegalBases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "consent",
+              "contract",
+              "legal_obligation",
+              "vital_interests",
+              "public_task",
+              "legitimate_interests"
+            ]
+          },
+          "description": "Accepted legal bases for processing"
+        },
+        "maxRetention": {
+          "type": "string",
+          "enum": [
+            "session_only",
+            "24h",
+            "7d",
+            "30d",
+            "1y"
+          ],
+          "description": "Maximum allowed data retention"
+        },
+        "allowThirdPartySharing": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether third-party sharing is permitted"
+        },
+        "allowAutomatedDecisions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether automated decision-making is permitted"
+        },
+        "allowProfiling": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether profiling is permitted"
+        },
+        "requirePurposeDescription": {
+          "type": "boolean",
+          "default": false,
+          "description": "Require human-readable purpose description"
+        }
+      }
+    }
+  }
+}

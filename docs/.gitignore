@@ -1,0 +1,10 @@
+# Virtual environment
+.venv/
+venv/
+
+# Build output
+site/
+
+# Python cache
+__pycache__/
+*.pyc

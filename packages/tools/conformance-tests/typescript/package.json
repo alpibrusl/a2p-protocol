@@ -1,0 +1,42 @@
+{
+  "name": "@a2p/conformance-tests",
+  "version": "0.1.0",
+  "description": "Conformance test suite for a2p protocol implementations",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "a2p-test": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/cli.ts --format cjs,esm --dts",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest"
+  },
+  "keywords": ["a2p", "conformance", "testing", "protocol", "validation"],
+  "author": "a2p Protocol Team",
+  "license": "EUPL-1.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a2p-protocol/a2p.git",
+    "directory": "packages/tools/conformance-tests/typescript"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  }
+}

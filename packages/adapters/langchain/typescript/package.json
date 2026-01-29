@@ -1,0 +1,36 @@
+{
+  "name": "@a2p/langchain",
+  "version": "0.1.0",
+  "description": "LangChain adapter for the a2p protocol",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest"
+  },
+  "keywords": ["a2p", "langchain", "ai", "agent", "memory", "profile"],
+  "author": "a2p Protocol Team",
+  "license": "EUPL-1.2",
+  "dependencies": {
+    "@a2p/sdk": "workspace:*"
+  },
+  "peerDependencies": {
+    "langchain": ">=0.1.0"
+  },
+  "devDependencies": {
+    "langchain": "^0.1.0",
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  }
+}

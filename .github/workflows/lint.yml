@@ -1,0 +1,66 @@
+name: Lint
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pip install --upgrade pip
+          pip install pre-commit
+
+      - name: Run pre-commit hooks
+        run: pre-commit run --all-files
+
+      - name: Check TypeScript linting
+        run: |
+          # Check if ESLint config exists and run if available
+          if [ -f "packages/sdk/typescript/.eslintrc.js" ] || [ -f "packages/sdk/typescript/eslint.config.js" ] || [ -f ".eslintrc.js" ] || [ -f "eslint.config.js" ]; then
+            pnpm lint || echo "Linting issues found"
+          else
+            echo "No ESLint config found, skipping TypeScript linting"
+          fi
+
+      - name: Check Python linting
+        run: |
+          # Run Ruff for Python packages
+          pip install ruff
+          for pkg in packages/sdk/python packages/adapters/*/python packages/adapters/*; do
+            if [ -d "$pkg" ] && [ -f "$pkg/pyproject.toml" ] || [ -f "$pkg/setup.py" ]; then
+              echo "Linting $pkg"
+              ruff check "$pkg" || echo "Linting issues found in $pkg"
+            fi
+          done
+
+      - name: Check Markdown linting
+        run: |
+          pip install markdownlint-cli2
+          markdownlint-cli2 "**/*.md" || echo "Markdown linting issues found"

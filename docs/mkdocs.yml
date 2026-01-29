@@ -1,0 +1,164 @@
+site_name: a2p Protocol
+site_url: https://alpibrusl.github.io/a2p-protocol
+site_description: User-sovereign profiles for AI agents - An open protocol giving users ownership of their AI interaction data
+site_author: a2p Protocol Team
+
+repo_name: alpibrusl/a2p-protocol
+repo_url: https://github.com/alpibrusl/a2p-protocol
+
+docs_dir: content
+site_dir: site
+
+copyright: Copyright &copy; 2025 a2p Protocol. Licensed under EUPL-1.2.
+
+theme:
+  name: material
+  custom_dir: overrides
+  language: en
+  
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
+
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/account-circle
+
+  # favicon: assets/favicon.png  # TODO: Add favicon
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/alpibrusl/a2p-protocol
+    # - icon: fontawesome/brands/discord
+    #   link: https://discord.gg/a2p
+    # - icon: fontawesome/brands/twitter
+    #   link: https://twitter.com/a2p_protocol
+
+  generator: false
+
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX  # Replace with your GA4 property
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: alpibrusl
+      repo: a2p-protocol
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+nav:
+  - Home: index.md
+  - Documentation:
+    - What is a2p?: documentation/what-is-a2p.md
+    - Core Concepts: documentation/core-concepts.md
+    - Architecture: documentation/architecture.md
+    - Comparison: documentation/comparison.md
+  - Specification:
+    - Full Specification: spec/index.md
+    - Overview: spec/overview.md
+    - Profiles: spec/profiles.md
+    - Memories: spec/memories.md
+    - Accessibility: spec/accessibility.md
+    - Children & Guardianship: spec/guardianship.md
+    - Consent & Policies: spec/consent.md
+    - Security: spec/security.md
+    - Schemas: spec/schemas.md
+  - Tutorials:
+    - Quickstart (TypeScript): tutorials/quickstart-typescript.md
+    - Quickstart (Python): tutorials/quickstart-python.md
+    - Agent Integration: tutorials/agent-integration.md
+    - Memory Proposals: tutorials/memory-proposals.md
+  - SDK Reference:
+    - TypeScript: sdk/typescript.md
+    - Python: sdk/python.md
+  - Adapters:
+    - Overview: adapters/overview.md
+    - LangChain: adapters/langchain.md
+    - OpenAI: adapters/openai.md
+    - LangGraph: adapters/langgraph.md
+    - CrewAI: adapters/crewai.md
+  - Compliance:
+    - GDPR: compliance/gdpr.md
+    - EU AI Act: compliance/ai-act.md
+    - DPIA Guide: compliance/dpia.md
+  - Community:
+    - Contributing: community/contributing.md
+    - Governance: community/governance.md
+    - Roadmap: community/roadmap.md

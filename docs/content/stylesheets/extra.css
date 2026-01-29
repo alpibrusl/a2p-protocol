@@ -1,0 +1,286 @@
+/* a2p Protocol - Custom Styles */
+
+:root {
+  /* Primary colors */
+  --a2p-primary: #7c3aed;
+  --a2p-primary-light: #a78bfa;
+  --a2p-primary-dark: #5b21b6;
+  
+  /* Accent colors */
+  --a2p-accent: #f59e0b;
+  --a2p-accent-light: #fbbf24;
+  
+  /* Semantic colors */
+  --a2p-success: #10b981;
+  --a2p-warning: #f59e0b;
+  --a2p-error: #ef4444;
+  
+  /* Neutral */
+  --a2p-bg-dark: #0f0f23;
+  --a2p-bg-card: #1a1a2e;
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: var(--a2p-primary);
+  --md-primary-fg-color--light: var(--a2p-primary-light);
+  --md-primary-fg-color--dark: var(--a2p-primary-dark);
+  --md-accent-fg-color: var(--a2p-accent);
+  --md-default-bg-color: var(--a2p-bg-dark);
+}
+
+/* Hero section */
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, var(--a2p-bg-dark) 0%, #1e1e3f 50%, var(--a2p-bg-dark) 100%);
+  border-radius: 1rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+  animation: pulse 15s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.3; }
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--a2p-primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.hero h2 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.hero .md-button {
+  margin: 0.5rem;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  position: relative;
+}
+
+.hero .md-button--primary {
+  background: var(--a2p-primary);
+  border: none;
+}
+
+.hero .md-button--primary:hover {
+  background: var(--a2p-primary-dark);
+}
+
+/* CTA section */
+.cta {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, var(--a2p-bg-card) 0%, #252547 100%);
+  border-radius: 1rem;
+  margin-top: 3rem;
+}
+
+/* Grid cards styling */
+.grid.cards > ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.grid.cards > ul > li {
+  background: var(--a2p-bg-card);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.grid.cards > ul > li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15);
+  border-color: var(--a2p-primary);
+}
+
+.grid.cards .lg {
+  font-size: 2rem;
+  color: var(--a2p-primary-light);
+}
+
+.grid.cards .middle {
+  vertical-align: middle;
+}
+
+/* Code blocks */
+.highlight code {
+  border-radius: 0.5rem;
+}
+
+.highlight pre {
+  border-left: 3px solid var(--a2p-primary);
+}
+
+/* Tables */
+.md-typeset table:not([class]) {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--a2p-bg-card);
+  color: var(--a2p-primary-light);
+}
+
+/* Admonitions */
+.md-typeset .admonition {
+  border-radius: 0.5rem;
+  border-left-width: 4px;
+}
+
+/* Tabs */
+.md-typeset .tabbed-labels > label {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Mermaid diagrams */
+.mermaid {
+  background: transparent !important;
+}
+
+/* Dark mode Mermaid diagram adjustments */
+[data-md-color-scheme="slate"] .mermaid {
+  filter: brightness(1.1) contrast(1.05);
+}
+
+/* Ensure Mermaid text is readable in dark mode */
+[data-md-color-scheme="slate"] .mermaid text,
+[data-md-color-scheme="slate"] .mermaid .nodeLabel,
+[data-md-color-scheme="slate"] .mermaid .edgeLabel {
+  fill: rgba(255, 255, 255, 0.9) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Mermaid node backgrounds in dark mode */
+[data-md-color-scheme="slate"] .mermaid .node rect,
+[data-md-color-scheme="slate"] .mermaid .node circle,
+[data-md-color-scheme="slate"] .mermaid .node ellipse,
+[data-md-color-scheme="slate"] .mermaid .node polygon {
+  stroke: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Mermaid edge/link colors in dark mode */
+[data-md-color-scheme="slate"] .mermaid .edgePath path,
+[data-md-color-scheme="slate"] .mermaid .flowchart-link {
+  stroke: rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .arrowheadPath {
+  fill: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Navigation */
+.md-nav__link--active {
+  color: var(--a2p-primary-light) !important;
+}
+
+/* Search */
+.md-search__input {
+  border-radius: 0.5rem;
+}
+
+/* Footer */
+.md-footer {
+  background: var(--a2p-bg-dark);
+  border-top: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .hero h2 {
+    font-size: 1.2rem;
+  }
+  
+  .grid.cards > ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Feature comparison table */
+.md-typeset table:not([class]) td:first-child {
+  font-weight: 600;
+}
+
+/* Version badge */
+.version-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--a2p-primary);
+  color: white;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+/* Status indicators */
+.status-available::before {
+  content: '✅';
+  margin-right: 0.25rem;
+}
+
+.status-planned::before {
+  content: '🔜';
+  margin-right: 0.25rem;
+}
+
+/* Protocol flow animations */
+.protocol-flow {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* EU badge */
+.eu-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #003399 0%, #1a1a6c 100%);
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 600;
+}
+
+.eu-badge::before {
+  content: '🇪🇺';
+  font-size: 1.25rem;
+}

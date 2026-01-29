@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/webhook-events.json",
+  "title": "A2P Webhook Events",
+  "description": "Standardized webhook event payloads for a2p notifications",
+  "type": "object",
+  "properties": {
+    "webhookEvent": {
+      "$ref": "#/$defs/webhookEvent"
+    }
+  },
+  "$defs": {
+    "webhookEvent": {
+      "type": "object",
+      "required": [
+        "eventId",
+        "eventType",
+        "timestamp",
+        "source",
+        "data"
+      ],
+      "description": "Standard webhook event envelope",
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "pattern": "^evt_[a-zA-Z0-9]{16,32}$",
+          "description": "Unique event identifier"
+        },
+        "eventType": {
+          "type": "string",
+          "enum": [
+            "proposal.received",
+            "proposal.approved",
+            "proposal.rejected",
+            "proposal.expired",
+            "access.granted",
+            "access.denied",
+            "access.revoked",
+            "policy.created",
+            "policy.updated",
+            "policy.deleted",
+            "profile.updated",
+            "profile.deleted",
+            "memory.created",
+            "memory.updated",
+            "memory.deleted",
+            "key.rotated",
+            "key.revoked",
+            "security.alert",
+            "consent.granted",
+            "consent.revoked"
+          ],
+          "description": "Type of event"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the event occurred"
+        },
+        "source": {
+          "$ref": "#/$defs/eventSource"
+        },
+        "subject": {
+          "$ref": "#/$defs/eventSubject"
+        },
+        "data": {
+          "type": "object",
+          "description": "Event-specific payload data"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eventMetadata"
+        }
+      }
+    },
+    "eventSource": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "description": "Source of the event",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "user",
+            "agent",
+            "system",
+            "entity"
+          ],
+          "description": "Type of event source"
+        },
+        "id": {
+          "type": "string",
+          "description": "DID of the source"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the source"
+        }
+      }
+    },
+    "eventSubject": {
+      "type": "object",
+      "description": "Subject of the event (e.g., affected profile)",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "profile",
+            "memory",
+            "proposal",
+            "policy",
+            "consent"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "description": "ID of the subject"
+        },
+        "userDid": {
+          "type": "string",
+          "description": "DID of affected user"
+        }
+      }
+    },
+    "eventMetadata": {
+      "type": "object",
+      "description": "Additional event metadata",
+      "properties": {
+        "correlationId": {
+          "type": "string",
+          "description": "ID for correlating related events"
+        },
+        "causationId": {
+          "type": "string",
+          "description": "ID of event that caused this event"
+        },
+        "version": {
+          "type": "string",
+          "default": "1.0",
+          "description": "Event schema version"
+        },
+        "retryCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of delivery retries"
+        }
+      }
+    },
+    "proposalReceivedData": {
+      "type": "object",
+      "description": "Data for proposal.received event",
+      "properties": {
+        "proposalId": {
+          "type": "string"
+        },
+        "agentDid": {
+          "type": "string"
+        },
+        "agentName": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "context": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "proposalResolvedData": {
+      "type": "object",
+      "description": "Data for proposal.approved/rejected events",
+      "properties": {
+        "proposalId": {
+          "type": "string"
+        },
+        "agentDid": {
+          "type": "string"
+        },
+        "resolution": {
+          "type": "string",
+          "enum": [
+            "approved",
+            "approved_with_edits",
+            "rejected",
+            "expired"
+          ]
+        },
+        "originalContent": {
+          "type": "string"
+        },
+        "finalContent": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "resolvedBy": {
+          "type": "string"
+        }
+      }
+    },
+    "accessEventData": {
+      "type": "object",
+      "description": "Data for access.granted/denied/revoked events",
+      "properties": {
+        "agentDid": {
+          "type": "string"
+        },
+        "agentName": {
+          "type": "string"
+        },
+        "requestedScopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "grantedScopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deniedScopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "type": "string"
+        },
+        "policyId": {
+          "type": "string"
+        },
+        "consentReceiptId": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "policyEventData": {
+      "type": "object",
+      "description": "Data for policy.* events",
+      "properties": {
+        "policyId": {
+          "type": "string"
+        },
+        "policyName": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "created",
+            "updated",
+            "deleted"
+          ]
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string"
+              },
+              "oldValue": {},
+              "newValue": {}
+            }
+          }
+        },
+        "updatedBy": {
+          "type": "string"
+        }
+      }
+    },
+    "memoryEventData": {
+      "type": "object",
+      "description": "Data for memory.* events",
+      "properties": {
+        "memoryId": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "created",
+            "updated",
+            "deleted",
+            "archived"
+          ]
+        },
+        "content": {
+          "type": "string"
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "agentDid": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "keyEventData": {
+      "type": "object",
+      "description": "Data for key.rotated/revoked events",
+      "properties": {
+        "keyId": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "rotated",
+            "revoked"
+          ]
+        },
+        "oldKeyId": {
+          "type": "string"
+        },
+        "newKeyId": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "gracePeriodEnds": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "securityAlertData": {
+      "type": "object",
+      "description": "Data for security.alert events",
+      "properties": {
+        "alertType": {
+          "type": "string",
+          "enum": [
+            "unusual_access",
+            "rate_limit_exceeded",
+            "authentication_failure",
+            "policy_violation",
+            "suspicious_activity"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceIp": {
+          "type": "string"
+        },
+        "agentDid": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object"
+        },
+        "recommendedAction": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "webhookEvent": {
+        "eventId": "evt_abc123def456ghi789",
+        "eventType": "proposal.received",
+        "timestamp": "2024-12-24T10:00:00Z",
+        "source": {
+          "type": "agent",
+          "id": "did:a2p:agent:local:claude",
+          "name": "Claude Assistant"
+        },
+        "subject": {
+          "type": "profile",
+          "userDid": "did:a2p:user:local:alice"
+        },
+        "data": {
+          "proposalId": "prop_xyz789",
+          "agentDid": "did:a2p:agent:local:claude",
+          "agentName": "Claude Assistant",
+          "content": "Prefers TypeScript for new projects",
+          "category": "a2p:professional.preferences",
+          "confidence": 0.85,
+          "context": "Based on recent code discussions",
+          "expiresAt": "2024-12-31T10:00:00Z"
+        },
+        "metadata": {
+          "version": "1.0",
+          "correlationId": "sess_abc123"
+        }
+      }
+    },
+    {
+      "webhookEvent": {
+        "eventId": "evt_sec_alert_001",
+        "eventType": "security.alert",
+        "timestamp": "2024-12-24T10:05:00Z",
+        "source": {
+          "type": "system",
+          "id": "did:a2p:system:guardian"
+        },
+        "subject": {
+          "type": "profile",
+          "userDid": "did:a2p:user:local:alice"
+        },
+        "data": {
+          "alertType": "unusual_access",
+          "severity": "medium",
+          "description": "Profile accessed from new location",
+          "sourceIp": "hash:sha256:...",
+          "agentDid": "did:a2p:agent:local:unknown",
+          "details": {
+            "country": "XX",
+            "previousCountry": "US"
+          },
+          "recommendedAction": "Review recent access and consider revoking if unauthorized"
+        }
+      }
+    }
+  ]
+}

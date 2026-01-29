@@ -1,0 +1,132 @@
+version: 2
+updates:
+  # npm dependencies (TypeScript packages)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "javascript"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      typescript-dependencies:
+        patterns:
+          - "@types/*"
+          - "typescript"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+
+  # npm dependencies for TypeScript SDK
+  - package-ecosystem: "npm"
+    directory: "/packages/sdk/typescript"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "typescript"
+      - "sdk"
+
+  # npm dependencies for TypeScript adapters
+  - package-ecosystem: "npm"
+    directory: "/packages/adapters/langchain/typescript"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "adapter"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/adapters/langgraph/typescript"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "adapter"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/adapters/openai/typescript"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "adapter"
+
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/packages/sdk/python"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python"
+      - "sdk"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # Python dependencies for adapters
+  - package-ecosystem: "pip"
+    directory: "/packages/adapters/crewai/python"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "python"
+      - "adapter"
+
+  - package-ecosystem: "pip"
+    directory: "/packages/adapters/langchain/python"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "python"
+      - "adapter"
+
+  - package-ecosystem: "pip"
+    directory: "/packages/adapters/langgraph/python"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "python"
+      - "adapter"
+
+  - package-ecosystem: "pip"
+    directory: "/packages/adapters/openai/python"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "python"
+      - "adapter"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+      - "github-actions"

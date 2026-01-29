@@ -1,0 +1,857 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/accessibility.json",
+  "title": "A2P Accessibility Preferences",
+  "description": "Standardized accessibility preferences for adaptive UI and assistive technology support. Part of the core a2p:preferences namespace.",
+  "type": "object",
+  "properties": {
+    "vision": {
+      "type": "object",
+      "description": "Visual accessibility preferences",
+      "properties": {
+        "screenReader": {
+          "type": "boolean",
+          "description": "User uses a screen reader (e.g., JAWS, NVDA, VoiceOver)",
+          "default": false
+        },
+        "magnification": {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 10.0,
+          "description": "Preferred magnification level (1.0 = normal)",
+          "default": 1.0
+        },
+        "highContrast": {
+          "type": "string",
+          "enum": [
+            "none",
+            "more",
+            "high",
+            "inverted"
+          ],
+          "description": "High contrast preference level",
+          "default": "none"
+        },
+        "reducedTransparency": {
+          "type": "boolean",
+          "description": "Reduce UI transparency for better visibility",
+          "default": false
+        },
+        "colorVision": {
+          "type": "object",
+          "description": "Color vision deficiency information",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "none",
+                "protanopia",
+                "deuteranopia",
+                "tritanopia",
+                "achromatopsia",
+                "protanomaly",
+                "deuteranomaly",
+                "tritanomaly"
+              ],
+              "description": "Type of color vision deficiency",
+              "default": "none"
+            },
+            "severity": {
+              "type": "string",
+              "enum": [
+                "none",
+                "mild",
+                "moderate",
+                "severe",
+                "complete"
+              ],
+              "description": "Severity of color vision deficiency",
+              "default": "none"
+            }
+          }
+        },
+        "prefersDarkMode": {
+          "type": "boolean",
+          "description": "Prefers dark mode interfaces",
+          "default": false
+        },
+        "prefersLightMode": {
+          "type": "boolean",
+          "description": "Prefers light mode interfaces",
+          "default": false
+        },
+        "fontSize": {
+          "type": "string",
+          "enum": [
+            "default",
+            "large",
+            "larger",
+            "largest"
+          ],
+          "description": "Preferred text size",
+          "default": "default"
+        },
+        "boldText": {
+          "type": "boolean",
+          "description": "Prefer bold text for better readability",
+          "default": false
+        },
+        "reducedMotion": {
+          "type": "boolean",
+          "description": "Reduce or eliminate motion/animations",
+          "default": false
+        },
+        "cursorSize": {
+          "type": "string",
+          "enum": [
+            "default",
+            "large",
+            "larger"
+          ],
+          "description": "Preferred cursor/pointer size",
+          "default": "default"
+        }
+      }
+    },
+    "hearing": {
+      "type": "object",
+      "description": "Auditory accessibility preferences",
+      "properties": {
+        "deaf": {
+          "type": "boolean",
+          "description": "User is deaf",
+          "default": false
+        },
+        "hardOfHearing": {
+          "type": "boolean",
+          "description": "User is hard of hearing",
+          "default": false
+        },
+        "prefersVisualAlerts": {
+          "type": "boolean",
+          "description": "Flash screen or use visual cues instead of audio alerts",
+          "default": false
+        },
+        "captions": {
+          "type": "object",
+          "description": "Caption/subtitle preferences",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable captions by default",
+              "default": false
+            },
+            "style": {
+              "type": "string",
+              "enum": [
+                "default",
+                "large",
+                "high-contrast",
+                "custom"
+              ],
+              "description": "Caption display style"
+            },
+            "background": {
+              "type": "string",
+              "enum": [
+                "transparent",
+                "semi-transparent",
+                "solid"
+              ],
+              "description": "Caption background style"
+            },
+            "language": {
+              "type": "string",
+              "description": "Preferred caption language (ISO 639-1)"
+            }
+          }
+        },
+        "signLanguage": {
+          "type": "string",
+          "description": "Preferred sign language (e.g., ASL, BSL, LSE, DGS, LSF)",
+          "examples": [
+            "ASL",
+            "BSL",
+            "LSE",
+            "DGS",
+            "LSF",
+            "Auslan",
+            "ISL"
+          ]
+        },
+        "monoAudio": {
+          "type": "boolean",
+          "description": "Combine stereo audio into mono for single-ear listening",
+          "default": false
+        },
+        "audioDescriptions": {
+          "type": "boolean",
+          "description": "Enable audio descriptions for visual content",
+          "default": false
+        }
+      }
+    },
+    "motor": {
+      "type": "object",
+      "description": "Motor/physical accessibility preferences",
+      "properties": {
+        "keyboardOnly": {
+          "type": "boolean",
+          "description": "User navigates using keyboard only (no mouse)",
+          "default": false
+        },
+        "switchAccess": {
+          "type": "boolean",
+          "description": "User uses switch access devices",
+          "default": false
+        },
+        "voiceControl": {
+          "type": "boolean",
+          "description": "User prefers voice control",
+          "default": false
+        },
+        "eyeTracking": {
+          "type": "boolean",
+          "description": "User uses eye tracking for navigation",
+          "default": false
+        },
+        "reducedMotion": {
+          "type": "boolean",
+          "description": "Reduce animations and motion effects",
+          "default": false
+        },
+        "largeClickTargets": {
+          "type": "boolean",
+          "description": "Prefer larger buttons and click targets (min 44x44px)",
+          "default": false
+        },
+        "extendedTimeouts": {
+          "type": "boolean",
+          "description": "Extend timeouts for timed interactions",
+          "default": false
+        },
+        "stickyKeys": {
+          "type": "boolean",
+          "description": "Enable sticky keys for modifier key combinations",
+          "default": false
+        },
+        "dwellClick": {
+          "type": "boolean",
+          "description": "Enable dwell/hover clicking",
+          "default": false
+        },
+        "dwellTime": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 5000,
+          "description": "Dwell time in milliseconds before click",
+          "default": 1000
+        }
+      }
+    },
+    "cognitive": {
+      "type": "object",
+      "description": "Cognitive accessibility preferences",
+      "properties": {
+        "simplifiedUI": {
+          "type": "boolean",
+          "description": "Prefer simplified, less cluttered interfaces",
+          "default": false
+        },
+        "reducedAnimations": {
+          "type": "boolean",
+          "description": "Minimize distracting animations",
+          "default": false
+        },
+        "readingAssistance": {
+          "type": "object",
+          "description": "Reading assistance preferences",
+          "properties": {
+            "dyslexiaFont": {
+              "type": "boolean",
+              "description": "Use dyslexia-friendly fonts (e.g., OpenDyslexic)",
+              "default": false
+            },
+            "lineSpacing": {
+              "type": "string",
+              "enum": [
+                "default",
+                "wide",
+                "wider"
+              ],
+              "description": "Preferred line spacing",
+              "default": "default"
+            },
+            "letterSpacing": {
+              "type": "string",
+              "enum": [
+                "default",
+                "wide",
+                "wider"
+              ],
+              "description": "Preferred letter spacing",
+              "default": "default"
+            },
+            "focusMode": {
+              "type": "boolean",
+              "description": "Highlight current line/paragraph being read",
+              "default": false
+            },
+            "readingGuide": {
+              "type": "boolean",
+              "description": "Show a reading guide/ruler",
+              "default": false
+            }
+          }
+        },
+        "memoryAids": {
+          "type": "boolean",
+          "description": "Show reminders, breadcrumbs, and navigation aids",
+          "default": false
+        },
+        "clearNavigation": {
+          "type": "boolean",
+          "description": "Prefer clear, consistent navigation patterns",
+          "default": false
+        },
+        "plainLanguage": {
+          "type": "boolean",
+          "description": "Prefer plain, simple language",
+          "default": false
+        },
+        "contentWarnings": {
+          "type": "boolean",
+          "description": "Show content warnings before potentially distressing content",
+          "default": false
+        }
+      }
+    },
+    "sensory": {
+      "type": "object",
+      "description": "Sensory processing preferences",
+      "properties": {
+        "reduceFlashing": {
+          "type": "boolean",
+          "description": "Reduce or eliminate flashing content (photosensitivity)",
+          "default": false
+        },
+        "reduceAutoplay": {
+          "type": "boolean",
+          "description": "Disable auto-playing media",
+          "default": false
+        },
+        "quietMode": {
+          "type": "boolean",
+          "description": "Minimize audio and sound effects",
+          "default": false
+        },
+        "hapticFeedback": {
+          "type": "boolean",
+          "description": "Enable haptic/vibration feedback",
+          "default": true
+        },
+        "reduceParallax": {
+          "type": "boolean",
+          "description": "Reduce parallax scrolling effects",
+          "default": false
+        }
+      }
+    },
+    "assistiveTechnology": {
+      "type": "object",
+      "description": "Information about assistive technologies in use",
+      "properties": {
+        "screenReader": {
+          "type": "string",
+          "description": "Screen reader software used",
+          "examples": [
+            "JAWS",
+            "NVDA",
+            "VoiceOver",
+            "TalkBack",
+            "Orca"
+          ]
+        },
+        "brailleDisplay": {
+          "type": "boolean",
+          "description": "User has a braille display",
+          "default": false
+        },
+        "voiceControlSoftware": {
+          "type": "string",
+          "description": "Voice control software used",
+          "examples": [
+            "Dragon NaturallySpeaking",
+            "Voice Control",
+            "Voice Access"
+          ]
+        }
+      }
+    },
+    "physical": {
+      "type": "object",
+      "description": "Physical accessibility needs for real-world services (reservations, travel, healthcare)",
+      "properties": {
+        "mobility": {
+          "type": "object",
+          "description": "Mobility aids and requirements",
+          "properties": {
+            "wheelchair": {
+              "type": "boolean",
+              "description": "Uses a wheelchair",
+              "default": false
+            },
+            "wheelchairType": {
+              "type": "string",
+              "enum": [
+                "manual",
+                "electric",
+                "scooter"
+              ],
+              "description": "Type of wheelchair if applicable"
+            },
+            "walker": {
+              "type": "boolean",
+              "description": "Uses a walker",
+              "default": false
+            },
+            "crutches": {
+              "type": "boolean",
+              "description": "Uses crutches",
+              "default": false
+            },
+            "cane": {
+              "type": "boolean",
+              "description": "Uses a cane",
+              "default": false
+            },
+            "requiresAccessibleEntrance": {
+              "type": "boolean",
+              "description": "Requires wheelchair-accessible entrance (ramps, no stairs)",
+              "default": false
+            },
+            "requiresElevator": {
+              "type": "boolean",
+              "description": "Cannot use stairs, requires elevator access",
+              "default": false
+            },
+            "requiresAccessibleBathroom": {
+              "type": "boolean",
+              "description": "Requires accessible bathroom facilities",
+              "default": false
+            },
+            "transferAssistance": {
+              "type": "boolean",
+              "description": "May need assistance transferring (e.g., to/from wheelchair)",
+              "default": false
+            }
+          }
+        },
+        "serviceAnimal": {
+          "type": "object",
+          "description": "Service animal information",
+          "properties": {
+            "has": {
+              "type": "boolean",
+              "description": "Has a service animal",
+              "default": false
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "guide_dog",
+                "hearing_dog",
+                "mobility_dog",
+                "psychiatric_dog",
+                "seizure_alert_dog",
+                "other"
+              ],
+              "description": "Type of service animal"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the service animal"
+            },
+            "breed": {
+              "type": "string",
+              "description": "Breed of the service animal"
+            }
+          }
+        },
+        "medicalDevices": {
+          "type": "object",
+          "description": "Medical devices that may affect service (e.g., metal detectors, MRI)",
+          "properties": {
+            "pacemaker": {
+              "type": "boolean",
+              "description": "Has a pacemaker or ICD",
+              "default": false
+            },
+            "insulinPump": {
+              "type": "boolean",
+              "description": "Uses an insulin pump",
+              "default": false
+            },
+            "oxygenSupply": {
+              "type": "boolean",
+              "description": "Requires supplemental oxygen",
+              "default": false
+            },
+            "hearingAid": {
+              "type": "boolean",
+              "description": "Uses hearing aids",
+              "default": false
+            },
+            "cochlearImplant": {
+              "type": "boolean",
+              "description": "Has cochlear implant",
+              "default": false
+            },
+            "cpapMachine": {
+              "type": "boolean",
+              "description": "Uses CPAP machine (relevant for travel/hotels)",
+              "default": false
+            },
+            "prosthetic": {
+              "type": "boolean",
+              "description": "Has prosthetic limb",
+              "default": false
+            },
+            "other": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Other medical devices"
+            }
+          }
+        },
+        "allergies": {
+          "type": "object",
+          "description": "Allergies for sharing with restaurants, hotels, venues (subset of full health record)",
+          "properties": {
+            "food": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Food allergies",
+              "examples": [
+                [
+                  "peanuts",
+                  "tree nuts",
+                  "shellfish",
+                  "dairy",
+                  "eggs",
+                  "wheat",
+                  "soy",
+                  "fish",
+                  "sesame"
+                ]
+              ]
+            },
+            "medication": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Medication allergies",
+              "examples": [
+                [
+                  "penicillin",
+                  "sulfa",
+                  "aspirin",
+                  "ibuprofen",
+                  "codeine"
+                ]
+              ]
+            },
+            "environmental": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Environmental allergies",
+              "examples": [
+                [
+                  "latex",
+                  "bee stings",
+                  "dust",
+                  "pollen",
+                  "pet dander"
+                ]
+              ]
+            },
+            "severity": {
+              "type": "object",
+              "description": "Severity level for each allergy (allergen name -> severity)",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "mild",
+                  "moderate",
+                  "severe",
+                  "anaphylactic"
+                ]
+              }
+            },
+            "epiPenCarrier": {
+              "type": "boolean",
+              "description": "Carries an EpiPen/epinephrine auto-injector",
+              "default": false
+            }
+          }
+        },
+        "dietary": {
+          "type": "object",
+          "description": "Dietary needs for restaurants, catering, travel",
+          "properties": {
+            "restrictions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "vegetarian",
+                  "vegan",
+                  "pescatarian",
+                  "halal",
+                  "kosher",
+                  "hindu_vegetarian",
+                  "jain",
+                  "no_pork",
+                  "no_beef",
+                  "no_alcohol"
+                ]
+              },
+              "description": "Dietary restrictions (religious, ethical, or personal)"
+            },
+            "intolerances": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Food intolerances (not allergies)",
+              "examples": [
+                [
+                  "lactose",
+                  "gluten",
+                  "fructose",
+                  "histamine"
+                ]
+              ]
+            },
+            "medicalDiets": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "diabetic",
+                  "low_sodium",
+                  "low_fat",
+                  "renal",
+                  "cardiac",
+                  "low_fodmap",
+                  "ketogenic",
+                  "pureed",
+                  "liquid"
+                ]
+              },
+              "description": "Medically required diets"
+            },
+            "preferences": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Dietary preferences (not requirements)",
+              "examples": [
+                [
+                  "organic",
+                  "local",
+                  "sustainable",
+                  "no_msg"
+                ]
+              ]
+            }
+          }
+        },
+        "specialAssistance": {
+          "type": "object",
+          "description": "Special assistance needs for travel, events, venues",
+          "properties": {
+            "interpreter": {
+              "type": "string",
+              "description": "Sign language interpreter needed (language code)",
+              "examples": [
+                "ASL",
+                "BSL",
+                "LSE",
+                "DGS",
+                "LSF"
+              ]
+            },
+            "companion": {
+              "type": "boolean",
+              "description": "Travels with a companion/carer who assists",
+              "default": false
+            },
+            "earlyBoarding": {
+              "type": "boolean",
+              "description": "Requires early boarding/entry for travel/events",
+              "default": false
+            },
+            "extraTime": {
+              "type": "boolean",
+              "description": "May need extra time for activities",
+              "default": false
+            },
+            "preferredSeating": {
+              "type": "string",
+              "enum": [
+                "aisle",
+                "window",
+                "front",
+                "near_exit",
+                "near_bathroom",
+                "extra_legroom",
+                "accessible"
+              ],
+              "description": "Preferred seating for travel/events"
+            },
+            "quietEnvironment": {
+              "type": "boolean",
+              "description": "Prefers quiet environment (sensory sensitivity)",
+              "default": false
+            },
+            "writtenInstructions": {
+              "type": "boolean",
+              "description": "Prefers written instructions over verbal",
+              "default": false
+            }
+          }
+        },
+        "emergencyInfo": {
+          "type": "object",
+          "description": "Emergency information for service providers",
+          "properties": {
+            "emergencyContact": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "relationship": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                }
+              }
+            },
+            "medicalConditions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Conditions relevant in emergencies (e.g., epilepsy, diabetes, heart condition)"
+            },
+            "bloodType": {
+              "type": "string",
+              "enum": [
+                "A+",
+                "A-",
+                "B+",
+                "B-",
+                "AB+",
+                "AB-",
+                "O+",
+                "O-"
+              ],
+              "description": "Blood type for emergencies"
+            },
+            "doNotResuscitate": {
+              "type": "boolean",
+              "description": "DNR status (legal document required)",
+              "default": false
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "vision": {
+        "colorVision": {
+          "type": "deuteranopia",
+          "severity": "moderate"
+        },
+        "fontSize": "large"
+      },
+      "motor": {
+        "reducedMotion": true,
+        "largeClickTargets": true
+      }
+    },
+    {
+      "hearing": {
+        "deaf": true,
+        "captions": {
+          "enabled": true,
+          "style": "large",
+          "background": "solid"
+        },
+        "signLanguage": "ASL",
+        "prefersVisualAlerts": true
+      }
+    },
+    {
+      "vision": {
+        "screenReader": true,
+        "highContrast": "high"
+      },
+      "assistiveTechnology": {
+        "screenReader": "NVDA",
+        "brailleDisplay": true
+      }
+    },
+    {
+      "physical": {
+        "mobility": {
+          "wheelchair": true,
+          "wheelchairType": "electric",
+          "requiresAccessibleEntrance": true,
+          "requiresElevator": true
+        },
+        "serviceAnimal": {
+          "has": true,
+          "type": "guide_dog",
+          "name": "Max"
+        },
+        "allergies": {
+          "food": [
+            "peanuts",
+            "shellfish"
+          ],
+          "severity": {
+            "peanuts": "anaphylactic",
+            "shellfish": "moderate"
+          },
+          "epiPenCarrier": true
+        },
+        "dietary": {
+          "restrictions": [
+            "vegetarian"
+          ],
+          "intolerances": [
+            "lactose"
+          ]
+        },
+        "specialAssistance": {
+          "earlyBoarding": true,
+          "preferredSeating": "aisle"
+        }
+      }
+    }
+  ]
+}

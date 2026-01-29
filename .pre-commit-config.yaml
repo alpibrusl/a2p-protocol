@@ -1,0 +1,77 @@
+# Pre-commit hooks for a2p Protocol
+# Simplified version (tests run on CI only)
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(docs/|schemas/|.*\.md$)
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: ^(mkdocs\.yml|docs/.*\.yml)$
+      - id: check-json
+      - id: check-toml
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: check-merge-conflict
+      - id: check-case-conflict
+
+  # Python linting and formatting (fast)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        files: ^packages/.*\.py$
+      - id: ruff-format
+        files: ^packages/.*\.py$
+
+  # Python type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies: []
+        args: [--ignore-missing-imports, --no-strict-optional, --follow-imports=silent, --show-error-codes]
+        files: ^packages/.*\.py$
+        exclude: ^packages/.*/tests/.*\.py$
+
+  # TypeScript/JavaScript linting (only run if ESLint config exists)
+  - repo: local
+    hooks:
+      - id: eslint-typescript
+        name: eslint TypeScript
+        entry: bash -c 'cd packages/sdk/typescript && if [ -f .eslintrc.js ] || [ -f eslint.config.js ]; then pnpm exec eslint "$@"; else echo "Skipping ESLint - no config found"; fi' --
+        language: system
+        files: ^packages/sdk/typescript/.*\.(ts|tsx|js|jsx)$
+        pass_filenames: true
+        require_serial: false
+        always_run: false
+
+  # Markdown linting (relaxed rules - disable line length, HTML, and code block language)
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint
+        args: [--fix, --disable, MD013, MD033, MD040]
+        files: ^(docs/|README\.md|CONTRIBUTING\.md|.*\.md)$
+
+  # Security: Secret detection (matches CI Gitleaks)
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package-lock.json|pnpm-lock.yaml|.*\.lock|examples/
+
+  # Security: Python security linting (matches CI security checks)
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        additional_dependencies: [pbr]
+        args: [-r, -ll, -ii]
+        files: ^packages/.*\.py$
+        exclude: ^packages/.*/tests/.*\.py$

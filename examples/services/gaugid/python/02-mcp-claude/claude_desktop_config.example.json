@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "gaugid": {
+      "command": "npx",
+      "args": ["-y", "@gaugid/mcp-server"],
+      "env": {
+        "GAUGID_API_URL": "https://api.gaugid.com",
+        "GAUGID_AUTH_TOKEN": "YOUR_FIREBASE_TOKEN_HERE",
+        "GAUGID_AGENT_DID": "did:a2p:agent:claude-assistant"
+      }
+    }
+  }
+}

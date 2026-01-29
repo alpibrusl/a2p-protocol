@@ -1,0 +1,776 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/profile.json",
+  "title": "A2P Profile",
+  "description": "User-owned profile for AI agent interactions",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "profileType",
+    "identity"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^did:",
+      "description": "DID of the profile owner"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9]+)?$",
+      "default": "0.1.0-alpha",
+      "description": "Profile schema version"
+    },
+    "profileType": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "entity"
+      ],
+      "description": "Type of profile (human for individuals, agent for AI/services, entity for organizations/teams/groups)"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Profile creation timestamp"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "identity": {
+      "$ref": "#/$defs/identity"
+    },
+    "common": {
+      "$ref": "#/$defs/common"
+    },
+    "memories": {
+      "$ref": "#/$defs/memories"
+    },
+    "subProfiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/subProfile"
+      },
+      "description": "Sub-profiles for different contexts"
+    },
+    "pendingProposals": {
+      "type": "array",
+      "items": {
+        "$ref": "proposal.schema.json"
+      },
+      "description": "Memory proposals awaiting review"
+    },
+    "accessPolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "consent-policy.schema.json"
+      },
+      "description": "Access control policies"
+    },
+    "settings": {
+      "$ref": "#/$defs/settings"
+    },
+    "guardianship": {
+      "$ref": "guardianship.schema.json",
+      "description": "Guardianship information for minor profiles (parental controls, content safety)"
+    }
+  },
+  "$defs": {
+    "identity": {
+      "type": "object",
+      "required": [
+        "did"
+      ],
+      "properties": {
+        "did": {
+          "type": "string",
+          "pattern": "^did:",
+          "description": "Decentralized Identifier"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Preferred display name"
+        },
+        "pronouns": {
+          "type": "string",
+          "description": "Preferred pronouns"
+        },
+        "publicKeys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "Ed25519",
+                  "secp256k1",
+                  "P-256"
+                ]
+              },
+              "publicKeyMultibase": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "publicKeyMultibase"
+            ]
+          },
+          "description": "Cryptographic public keys"
+        },
+        "recoveryMethods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Account recovery methods"
+        },
+        "ageContext": {
+          "type": "object",
+          "description": "Age-related context for the profile owner",
+          "properties": {
+            "ageGroup": {
+              "type": "string",
+              "enum": [
+                "infant",
+                "child",
+                "teen",
+                "adult",
+                "senior"
+              ],
+              "description": "Age group classification"
+            },
+            "ageRange": {
+              "type": "string",
+              "pattern": "^\\d{1,2}-\\d{1,2}$",
+              "description": "Age range (e.g., '8-12', '13-17')"
+            },
+            "isMinor": {
+              "type": "boolean",
+              "description": "Whether the user is legally a minor in their jurisdiction"
+            },
+            "jurisdiction": {
+              "type": "string",
+              "description": "Legal jurisdiction (ISO 3166-1 alpha-2)"
+            },
+            "digitalAgeOfConsent": {
+              "type": "integer",
+              "minimum": 13,
+              "maximum": 18,
+              "description": "Digital age of consent in user's jurisdiction"
+            },
+            "consentStatus": {
+              "type": "string",
+              "enum": [
+                "self_consent",
+                "parental_consent",
+                "pending_verification"
+              ],
+              "description": "Current consent status"
+            }
+          }
+        }
+      }
+    },
+    "common": {
+      "type": "object",
+      "description": "Common preferences shared across sub-profiles",
+      "properties": {
+        "preferences": {
+          "type": "object",
+          "properties": {
+            "language": {
+              "type": "string",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "description": "Preferred language (e.g., en-US)"
+            },
+            "timezone": {
+              "type": "string",
+              "description": "IANA timezone (e.g., Europe/Madrid)"
+            },
+            "communication": {
+              "type": "object",
+              "properties": {
+                "style": {
+                  "type": "string",
+                  "enum": [
+                    "concise",
+                    "detailed",
+                    "balanced"
+                  ],
+                  "default": "balanced"
+                },
+                "formality": {
+                  "type": "string",
+                  "enum": [
+                    "formal",
+                    "casual",
+                    "adaptive"
+                  ],
+                  "default": "adaptive"
+                },
+                "humor": {
+                  "type": "boolean",
+                  "default": true
+                }
+              }
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "format": {
+                  "type": "string",
+                  "enum": [
+                    "markdown",
+                    "plain",
+                    "rich"
+                  ],
+                  "default": "markdown"
+                },
+                "codeStyle": {
+                  "type": "string",
+                  "enum": [
+                    "commented",
+                    "minimal",
+                    "verbose"
+                  ],
+                  "default": "commented"
+                },
+                "exampleLanguage": {
+                  "type": "string",
+                  "description": "Preferred programming language for examples"
+                }
+              }
+            },
+            "accessibility": {
+              "$ref": "accessibility.schema.json",
+              "description": "Accessibility preferences for adaptive UI and assistive technology support"
+            },
+            "contentSafety": {
+              "type": "object",
+              "description": "Content safety and filtering preferences",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Whether content safety filtering is enabled",
+                  "default": false
+                },
+                "maturityRating": {
+                  "type": "string",
+                  "enum": [
+                    "G",
+                    "PG",
+                    "PG-13",
+                    "R",
+                    "NC-17"
+                  ],
+                  "description": "Maximum allowed maturity rating"
+                },
+                "filterExplicitContent": {
+                  "type": "boolean",
+                  "description": "Filter explicit/adult content",
+                  "default": false
+                },
+                "safeSearch": {
+                  "type": "string",
+                  "enum": [
+                    "off",
+                    "moderate",
+                    "strict"
+                  ],
+                  "description": "Safe search level",
+                  "default": "off"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "memories": {
+      "type": "object",
+      "description": "Structured memories organized by category",
+      "properties": {
+        "a2p:identity": {
+          "$ref": "#/$defs/categoryIdentity"
+        },
+        "a2p:preferences": {
+          "$ref": "#/$defs/categoryPreferences"
+        },
+        "a2p:professional": {
+          "$ref": "#/$defs/categoryProfessional"
+        },
+        "a2p:interests": {
+          "$ref": "#/$defs/categoryInterests"
+        },
+        "a2p:context": {
+          "$ref": "#/$defs/categoryContext"
+        },
+        "a2p:health": {
+          "$ref": "#/$defs/categoryHealth"
+        },
+        "a2p:relationships": {
+          "$ref": "#/$defs/categoryRelationships"
+        },
+        "a2p:episodic": {
+          "type": "array",
+          "items": {
+            "$ref": "memory.schema.json"
+          },
+          "description": "Episodic memories - specific events and interactions"
+        },
+        "a2p:semantic": {
+          "type": "array",
+          "items": {
+            "$ref": "memory.schema.json"
+          },
+          "description": "Semantic memories - general knowledge and facts"
+        },
+        "a2p:procedural": {
+          "type": "array",
+          "items": {
+            "$ref": "memory.schema.json"
+          },
+          "description": "Procedural memories - behavioral patterns and preferences"
+        }
+      },
+      "additionalProperties": true
+    },
+    "categoryIdentity": {
+      "type": "object",
+      "description": "Core identity information",
+      "properties": {
+        "name": {
+          "type": "object",
+          "properties": {
+            "preferred": {
+              "type": "string"
+            },
+            "full": {
+              "type": "string"
+            },
+            "nickname": {
+              "type": "string"
+            }
+          }
+        },
+        "birthYear": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2100
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            },
+            "timezone": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "categoryPreferences": {
+      "type": "object",
+      "description": "User preferences",
+      "properties": {
+        "communication": {
+          "type": "object",
+          "properties": {
+            "style": {
+              "type": "string"
+            },
+            "formality": {
+              "type": "string"
+            },
+            "verbosity": {
+              "type": "string"
+            },
+            "humor": {
+              "type": "boolean"
+            }
+          }
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string"
+            }
+          }
+        },
+        "ui": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "type": "string",
+              "enum": [
+                "light",
+                "dark",
+                "auto"
+              ]
+            },
+            "fontSize": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "categoryProfessional": {
+      "type": "object",
+      "description": "Professional and work-related information",
+      "properties": {
+        "occupation": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "employer": {
+          "type": "string"
+        },
+        "industry": {
+          "type": "string"
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "experience": {
+          "type": "object",
+          "properties": {
+            "years": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "level": {
+              "type": "string",
+              "enum": [
+                "entry",
+                "mid",
+                "senior",
+                "lead",
+                "executive"
+              ]
+            }
+          }
+        },
+        "workStyle": {
+          "type": "string",
+          "enum": [
+            "remote",
+            "hybrid",
+            "office",
+            "flexible"
+          ]
+        }
+      }
+    },
+    "categoryInterests": {
+      "type": "object",
+      "description": "Personal interests and hobbies",
+      "properties": {
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hobbies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "music": {
+          "type": "object",
+          "properties": {
+            "genres": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "artists": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "reading": {
+          "type": "object",
+          "properties": {
+            "genres": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "recentBooks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "travel": {
+          "type": "object",
+          "properties": {
+            "visited": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "wishlist": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "categoryContext": {
+      "type": "object",
+      "description": "Current context and ongoing activities",
+      "properties": {
+        "currentProjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recentTopics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ongoingGoals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "currentFocus": {
+          "type": "string"
+        }
+      }
+    },
+    "categoryHealth": {
+      "type": "object",
+      "description": "Health-related information (sensitive)",
+      "properties": {
+        "allergies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dietary": {
+          "type": "string",
+          "enum": [
+            "omnivore",
+            "vegetarian",
+            "vegan",
+            "pescatarian",
+            "keto",
+            "other"
+          ]
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "medications": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "_sensitivity": {
+          "const": "high"
+        }
+      }
+    },
+    "categoryRelationships": {
+      "type": "object",
+      "description": "Relationship information (sensitive)",
+      "properties": {
+        "family": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "pets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "_sensitivity": {
+          "const": "high"
+        }
+      }
+    },
+    "subProfile": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "description": "Context-specific sub-profile",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^did:"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "inheritsFrom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Sections to inherit from root profile"
+        },
+        "overrides": {
+          "type": "object",
+          "description": "Values that override inherited ones"
+        },
+        "specialized": {
+          "type": "object",
+          "description": "Sub-profile specific data"
+        },
+        "shareWith": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Agent patterns that can access this sub-profile"
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "Profile settings",
+      "properties": {
+        "memorySettings": {
+          "type": "object",
+          "properties": {
+            "decayEnabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "decayRate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.1
+            },
+            "decayInterval": {
+              "type": "string",
+              "default": "30d"
+            },
+            "reviewThreshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.5
+            },
+            "archiveThreshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.3
+            }
+          }
+        },
+        "notificationSettings": {
+          "type": "object",
+          "properties": {
+            "proposalNotifications": {
+              "type": "boolean",
+              "default": true
+            },
+            "accessNotifications": {
+              "type": "boolean",
+              "default": false
+            },
+            "consolidationReminders": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "privacySettings": {
+          "type": "object",
+          "properties": {
+            "defaultSensitivity": {
+              "type": "string",
+              "enum": [
+                "public",
+                "standard",
+                "sensitive"
+              ],
+              "default": "standard"
+            },
+            "allowAnonymousAccess": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

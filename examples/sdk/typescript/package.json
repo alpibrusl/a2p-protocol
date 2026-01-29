@@ -1,0 +1,31 @@
+{
+  "name": "@a2p/examples-typescript",
+  "version": "1.0.0",
+  "description": "a2p Protocol TypeScript Examples",
+  "type": "module",
+  "scripts": {
+    "01:basic-profile": "npx ts-node 01-basic-profile/index.ts",
+    "02:agent-integration": "npx ts-node 02-agent-integration/index.ts",
+    "03:memory-proposals": "npx ts-node 03-memory-proposals/index.ts",
+    "04:consent-policies": "npx ts-node 04-consent-policies/index.ts",
+    "05:langgraph-chatbot": "npx ts-node 05-langgraph-chatbot/index.ts",
+    "06:crewai-research": "npx ts-node 06-crewai-research/index.ts",
+    "07:multi-profile": "npx ts-node 07-multi-profile/index.ts",
+    "08:ml-recommender": "npx ts-node 08-ml-recommender/index.ts",
+    "09:iot-smart-home": "npx ts-node 09-iot-smart-home/index.ts",
+    "10:entity-hierarchy": "npx ts-node 10-entity-hierarchy/index.ts",
+    "11:accessibility-profile": "npx ts-node 11-accessibility-profile/index.ts",
+    "12:child-profile": "npx ts-node 12-child-profile/index.ts"
+  },
+  "dependencies": {
+    "@a2p/sdk": "workspace:*",
+    "@a2p/langgraph": "workspace:*",
+    "@a2p/openai": "workspace:*",
+    "@a2p/langchain": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "ts-node": "^10.9.0",
+    "@types/node": "^20.0.0"
+  }
+}

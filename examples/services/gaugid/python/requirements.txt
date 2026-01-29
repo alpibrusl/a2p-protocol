@@ -1,0 +1,11 @@
+# Gaugid Examples Dependencies
+
+# a2p SDK with cloud storage support
+a2p-sdk>=0.1.0
+httpx>=0.25.0
+
+# Google Gemini AI
+google-genai>=1.0.0
+
+# Environment variable handling
+python-dotenv>=1.0.0

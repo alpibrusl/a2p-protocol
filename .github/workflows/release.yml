@@ -1,0 +1,135 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pip install --upgrade pip build twine
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Publish TypeScript packages to npm
+        working-directory: packages/sdk/typescript
+        run: |
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish TypeScript adapters to npm
+        run: |
+          for adapter in packages/adapters/*/typescript/package.json; do
+            if [ -f "$adapter" ]; then
+              dir=$(dirname "$adapter")
+              echo "Publishing $dir"
+              cd "$dir"
+              npm publish --access public || echo "Failed to publish $dir"
+              cd - > /dev/null
+            fi
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true
+
+      - name: Build Python SDK
+        working-directory: packages/sdk/python
+        run: python -m build
+
+      - name: Publish Python SDK to PyPI
+        working-directory: packages/sdk/python
+        run: |
+          python -m twine upload dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+
+      - name: Build Python adapters
+        run: |
+          for adapter in packages/adapters/*/python/pyproject.toml packages/adapters/*/pyproject.toml; do
+            if [ -f "$adapter" ]; then
+              dir=$(dirname "$adapter")
+              echo "Building $dir"
+              cd "$dir"
+              python -m build || echo "Failed to build $dir"
+              cd - > /dev/null
+            fi
+          done
+
+      - name: Publish Python adapters to PyPI
+        run: |
+          for adapter in packages/adapters/*/python/pyproject.toml packages/adapters/*/pyproject.toml; do
+            if [ -f "$adapter" ]; then
+              dir=$(dirname "$adapter")
+              echo "Publishing $dir"
+              cd "$dir"
+              python -m twine upload dist/* || echo "Failed to publish $dir"
+              cd - > /dev/null
+            fi
+          done
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        continue-on-error: true
+
+      - name: Generate release notes from CHANGELOG
+        id: release_notes
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          # Extract changelog section for this version
+          awk "/^## \[$VERSION\]/,/^## \[/" CHANGELOG.md | sed '$d' > release_notes.md
+          echo "NOTES<<EOF" >> $GITHUB_OUTPUT
+          cat release_notes.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release v${{ steps.version.outputs.VERSION }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.VERSION, 'alpha') || contains(steps.version.outputs.VERSION, 'beta') || contains(steps.version.outputs.VERSION, 'rc') }}
+          files: |
+            packages/sdk/typescript/dist/**
+            packages/sdk/python/dist/**

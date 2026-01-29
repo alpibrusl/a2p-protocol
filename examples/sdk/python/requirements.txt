@@ -1,0 +1,14 @@
+# a2p Protocol Python Examples
+# Install: pip install -r requirements.txt
+
+# Core SDK
+a2p-sdk>=1.0.0
+
+# Framework adapters
+a2p-crewai>=1.0.0
+a2p-langchain>=1.0.0
+a2p-langgraph>=1.0.0
+
+# For development (local packages)
+# pip install -e ../../../packages/sdk/python
+# pip install -e ../../../packages/adapters/crewai/python

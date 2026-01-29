@@ -1,0 +1,17 @@
+# Travel Agent Example Dependencies
+# Note: Uses local a2p SDK from packages/sdk/python/src/ (no published package needed)
+
+# HTTP client for CloudStorage
+httpx>=0.25.0
+
+# Google Vertex AI (Gemini 3)
+google-genai>=1.50.0
+
+# HTTP requests (for Firebase Emulator auth)
+requests>=2.31.0
+
+# Firebase Admin SDK (for creating agent users with custom UID)
+firebase-admin>=6.0.0
+
+# Environment handling
+python-dotenv>=1.0.0

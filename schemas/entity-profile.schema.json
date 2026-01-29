@@ -1,0 +1,744 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/entity-profile.json",
+  "title": "A2P Entity Profile",
+  "description": "Generic hierarchical entity profile (organization, team, department, project, etc.)",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "profileType",
+    "identity"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^did:a2p:entity:",
+      "description": "Entity DID"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9]+)?$",
+      "default": "0.1.0-alpha",
+      "description": "Profile schema version"
+    },
+    "profileType": {
+      "const": "entity",
+      "description": "Profile type (always 'entity' for entity profiles)"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "identity": {
+      "$ref": "#/$defs/entityIdentity"
+    },
+    "hierarchy": {
+      "$ref": "#/$defs/hierarchy"
+    },
+    "enforcedPolicies": {
+      "$ref": "#/$defs/enforcedPolicies"
+    },
+    "policies": {
+      "$ref": "#/$defs/policies"
+    },
+    "preferences": {
+      "$ref": "#/$defs/preferences"
+    },
+    "members": {
+      "$ref": "#/$defs/members"
+    },
+    "certifications": {
+      "$ref": "#/$defs/certifications"
+    },
+    "accessPolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "consent-policy.schema.json"
+      },
+      "description": "Access control policies for external entities"
+    },
+    "effectivePolicies": {
+      "$ref": "#/$defs/effectivePolicies"
+    }
+  },
+  "$defs": {
+    "entityIdentity": {
+      "type": "object",
+      "required": [
+        "displayName",
+        "entityType"
+      ],
+      "description": "Entity identity information",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Display name of the entity"
+        },
+        "legalName": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Legal name (for organizations)"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Entity description"
+        },
+        "entityType": {
+          "type": "string",
+          "description": "Self-declared entity type (organization, department, team, project, guild, role, custom)",
+          "examples": [
+            "organization",
+            "department",
+            "team",
+            "project",
+            "guild",
+            "role",
+            "division",
+            "unit"
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags for categorization"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Legal jurisdiction (e.g., 'EU-DE', 'US-CA')"
+        },
+        "registrationNumber": {
+          "type": "string",
+          "description": "Legal registration number"
+        },
+        "industry": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Industry sectors"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "description": "Entity website"
+        },
+        "logo": {
+          "type": "string",
+          "format": "uri",
+          "description": "Logo URL"
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "publicKeys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "Ed25519",
+                  "secp256k1",
+                  "P-256"
+                ]
+              },
+              "publicKeyMultibase": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "publicKeyMultibase"
+            ]
+          }
+        }
+      }
+    },
+    "hierarchy": {
+      "type": "object",
+      "description": "Hierarchical relationships with other entities",
+      "properties": {
+        "parent": {
+          "type": "string",
+          "pattern": "^did:a2p:entity:",
+          "description": "Parent entity DID"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^did:a2p:entity:"
+          },
+          "description": "Child entity DIDs"
+        },
+        "inheritPolicies": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to inherit policies from parent"
+        },
+        "inheritanceRules": {
+          "type": "object",
+          "description": "Rules for how policies are inherited",
+          "additionalProperties": {
+            "type": "string",
+            "enum": [
+              "locked",
+              "narrowable",
+              "overridable",
+              "additive"
+            ],
+            "description": "Inheritance rule type"
+          },
+          "examples": [
+            {
+              "policies.security": "locked",
+              "policies.compliance": "locked",
+              "policies.ai": "narrowable",
+              "policies.tools": "overridable",
+              "preferences": "overridable"
+            }
+          ]
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Depth in the hierarchy tree (0 = root)"
+        },
+        "path": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Full path from root to this entity"
+        }
+      }
+    },
+    "enforcedPolicies": {
+      "type": "object",
+      "description": "Policies that are enforced on all child entities and members",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of enforced policies"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/enforcedRule"
+          },
+          "description": "List of enforced policy rules"
+        },
+        "exceptions": {
+          "$ref": "#/$defs/exceptionConfig"
+        }
+      }
+    },
+    "enforcedRule": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "value",
+        "enforcement"
+      ],
+      "description": "A single enforced policy rule",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique rule identifier"
+        },
+        "path": {
+          "type": "string",
+          "description": "JSON path to the policy (e.g., 'policies.compliance.gdpr')"
+        },
+        "value": {
+          "description": "The enforced value (any type)"
+        },
+        "enforcement": {
+          "type": "string",
+          "enum": [
+            "locked",
+            "min",
+            "max",
+            "subset",
+            "superset",
+            "additive",
+            "pattern",
+            "range"
+          ],
+          "description": "Type of enforcement"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Human-readable reason for this enforcement"
+        },
+        "enforcedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this rule was enacted"
+        },
+        "enforcedBy": {
+          "type": "string",
+          "description": "Who enacted this rule"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this rule expires (if temporary)"
+        }
+      }
+    },
+    "exceptionConfig": {
+      "type": "object",
+      "description": "Configuration for exception requests",
+      "properties": {
+        "allowExceptionRequests": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether exceptions can be requested"
+        },
+        "approvers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DIDs of users/entities that can approve exceptions"
+        },
+        "requiresJustification": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether a justification is required"
+        },
+        "maxDuration": {
+          "type": "string",
+          "description": "Maximum exception duration (e.g., '90d', '1y')"
+        },
+        "expiresAfter": {
+          "type": "string",
+          "description": "Default exception expiration"
+        }
+      }
+    },
+    "policies": {
+      "type": "object",
+      "description": "Entity-specific policies",
+      "properties": {
+        "compliance": {
+          "type": "object",
+          "properties": {
+            "gdpr": {
+              "type": "boolean"
+            },
+            "ccpa": {
+              "type": "boolean"
+            },
+            "hipaa": {
+              "type": "boolean"
+            },
+            "sox": {
+              "type": "boolean"
+            },
+            "custom": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "residency": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Allowed data residency regions"
+            },
+            "retention": {
+              "type": "object",
+              "properties": {
+                "maxMonths": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "minMonths": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "policy": {
+                  "type": "string"
+                }
+              }
+            },
+            "classification": {
+              "type": "object",
+              "properties": {
+                "levels": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "defaultLevel": {
+                  "type": "string"
+                }
+              }
+            },
+            "encryption": {
+              "type": "object",
+              "properties": {
+                "atRest": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "inTransit": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "minBits": {
+                  "type": "integer",
+                  "minimum": 128
+                }
+              }
+            }
+          }
+        },
+        "ai": {
+          "type": "object",
+          "properties": {
+            "allowedModels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Approved AI models"
+            },
+            "blockedModels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Blocked AI models"
+            },
+            "requiredDisclosures": {
+              "type": "boolean",
+              "description": "Whether AI usage must be disclosed"
+            },
+            "prohibitedUses": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Prohibited AI use cases"
+            },
+            "humanReviewRequired": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Areas requiring human review of AI output"
+            }
+          }
+        },
+        "security": {
+          "type": "object",
+          "properties": {
+            "mfaRequired": {
+              "type": "boolean"
+            },
+            "passwordPolicy": {
+              "type": "string"
+            },
+            "sessionTimeout": {
+              "type": "string"
+            },
+            "ipAllowlist": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "auditLogging": {
+              "type": "boolean"
+            }
+          }
+        },
+        "access": {
+          "type": "object",
+          "properties": {
+            "defaultPermissions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "requireApproval": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "branding": {
+          "type": "object",
+          "properties": {
+            "primaryColor": {
+              "type": "string"
+            },
+            "secondaryColor": {
+              "type": "string"
+            },
+            "tone": {
+              "type": "string"
+            },
+            "languages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "templates": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "preferences": {
+      "type": "object",
+      "description": "Entity preferences (non-policy)",
+      "properties": {
+        "communication": {
+          "type": "object",
+          "properties": {
+            "channels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "responseTime": {
+              "type": "string"
+            },
+            "escalationPath": {
+              "type": "string"
+            }
+          }
+        },
+        "integrations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Preferred integrations (e.g., sso, crm, ticketing)"
+        },
+        "tools": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Preferred tools"
+        },
+        "workflows": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Custom workflow preferences"
+        }
+      },
+      "additionalProperties": true
+    },
+    "members": {
+      "type": "object",
+      "description": "Entity membership",
+      "properties": {
+        "direct": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DIDs of direct members (users or entities)"
+        },
+        "admins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DIDs of administrators"
+        },
+        "roles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "Role assignments (DID -> roles[])"
+        },
+        "defaultMemberPolicy": {
+          "type": "string",
+          "enum": [
+            "inherit_all",
+            "inherit_policies",
+            "inherit_none"
+          ],
+          "default": "inherit_policies",
+          "description": "Default policy inheritance for new members"
+        },
+        "invitations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "role": {
+                "type": "string"
+              },
+              "invitedBy": {
+                "type": "string"
+              },
+              "invitedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "expiresAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "memberCount": {
+          "type": "object",
+          "properties": {
+            "direct": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "validUntil"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Certification type (e.g., 'ISO27001', 'SOC2')"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "Issuer DID or name"
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date"
+          },
+          "certificate": {
+            "type": "string",
+            "format": "uri",
+            "description": "Link to certificate"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Scope of certification"
+          }
+        }
+      },
+      "description": "Entity certifications"
+    },
+    "effectivePolicies": {
+      "type": "object",
+      "description": "Computed effective policies (including inherited)",
+      "properties": {
+        "_computed": {
+          "type": "boolean",
+          "const": true,
+          "description": "Indicates this is computed, not editable"
+        },
+        "_computedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "_sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DIDs of entities contributing to these policies"
+        },
+        "policies": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "description": "The effective value"
+              },
+              "source": {
+                "type": "string",
+                "description": "DID of source entity"
+              },
+              "enforcement": {
+                "type": "string"
+              },
+              "locked": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,527 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/guardianship.json",
+  "title": "A2P Guardianship Schema",
+  "description": "Schema for managing minor profiles, parental controls, and guardian relationships. Ensures compliance with COPPA, GDPR Article 8, and AADC.",
+  "type": "object",
+  "definitions": {
+    "ageContext": {
+      "type": "object",
+      "description": "Age-related context for the profile owner",
+      "properties": {
+        "ageGroup": {
+          "type": "string",
+          "enum": [
+            "infant",
+            "child",
+            "teen",
+            "adult",
+            "senior"
+          ],
+          "description": "Age group classification"
+        },
+        "ageRange": {
+          "type": "string",
+          "pattern": "^\\d{1,2}-\\d{1,2}$",
+          "description": "Age range (e.g., '8-12', '13-17')",
+          "examples": [
+            "0-4",
+            "5-7",
+            "8-12",
+            "13-17",
+            "18+"
+          ]
+        },
+        "isMinor": {
+          "type": "boolean",
+          "description": "Whether the user is legally a minor in their jurisdiction"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Legal jurisdiction (ISO 3166-1 alpha-2 country code)",
+          "examples": [
+            "ES",
+            "US",
+            "UK",
+            "DE",
+            "FR"
+          ]
+        },
+        "digitalAgeOfConsent": {
+          "type": "integer",
+          "minimum": 13,
+          "maximum": 18,
+          "description": "Digital age of consent in user's jurisdiction"
+        },
+        "consentStatus": {
+          "type": "string",
+          "enum": [
+            "self_consent",
+            "parental_consent",
+            "pending_verification",
+            "not_applicable"
+          ],
+          "description": "Current consent status"
+        },
+        "dateOfBirthVerified": {
+          "type": "boolean",
+          "description": "Whether date of birth has been verified",
+          "default": false
+        }
+      },
+      "required": [
+        "ageGroup",
+        "isMinor"
+      ]
+    },
+    "guardian": {
+      "type": "object",
+      "description": "A guardian (parent, legal guardian) who manages this profile",
+      "required": [
+        "did",
+        "relationship",
+        "permissions"
+      ],
+      "properties": {
+        "did": {
+          "type": "string",
+          "pattern": "^did:",
+          "description": "DID of the guardian"
+        },
+        "relationship": {
+          "type": "string",
+          "enum": [
+            "parent",
+            "legal_guardian",
+            "foster_parent",
+            "grandparent",
+            "other_relative",
+            "authorized_caregiver"
+          ],
+          "description": "Relationship to the minor"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "manage_profile",
+              "approve_proposals",
+              "set_policies",
+              "view_activity",
+              "manage_consent",
+              "delete_profile",
+              "manage_content_safety",
+              "manage_screen_time"
+            ]
+          },
+          "description": "Permissions granted to this guardian"
+        },
+        "consentGiven": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When parental consent was given"
+        },
+        "consentMethod": {
+          "type": "string",
+          "enum": [
+            "credit_card_verification",
+            "id_verification",
+            "video_verification",
+            "in_person",
+            "trusted_referee",
+            "knowledge_based"
+          ],
+          "description": "Method used to verify parental consent"
+        },
+        "consentExpiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the consent needs to be renewed"
+        },
+        "isPrimary": {
+          "type": "boolean",
+          "description": "Whether this is the primary guardian",
+          "default": false
+        }
+      }
+    },
+    "contentSafety": {
+      "type": "object",
+      "description": "Content safety and age-appropriate filtering preferences",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether content safety is enabled",
+          "default": true
+        },
+        "maturityRating": {
+          "type": "string",
+          "enum": [
+            "G",
+            "PG",
+            "PG-13",
+            "R",
+            "NC-17"
+          ],
+          "description": "Maximum allowed maturity rating (US-style)",
+          "default": "G"
+        },
+        "ageRating": {
+          "type": "string",
+          "enum": [
+            "3+",
+            "7+",
+            "12+",
+            "16+",
+            "18+"
+          ],
+          "description": "Maximum allowed age rating (PEGI-style)"
+        },
+        "filterExplicitContent": {
+          "type": "boolean",
+          "description": "Filter explicit/adult content",
+          "default": true
+        },
+        "filterViolence": {
+          "type": "boolean",
+          "description": "Filter violent content",
+          "default": true
+        },
+        "filterProfanity": {
+          "type": "boolean",
+          "description": "Filter profane language",
+          "default": true
+        },
+        "filterScaryContent": {
+          "type": "boolean",
+          "description": "Filter scary/horror content",
+          "default": true
+        },
+        "filterDrugsAlcohol": {
+          "type": "boolean",
+          "description": "Filter drug/alcohol references",
+          "default": true
+        },
+        "safeSearch": {
+          "type": "string",
+          "enum": [
+            "off",
+            "moderate",
+            "strict"
+          ],
+          "description": "Safe search level",
+          "default": "strict"
+        },
+        "chatRestrictions": {
+          "type": "object",
+          "description": "Chat and communication restrictions",
+          "properties": {
+            "allowStrangers": {
+              "type": "boolean",
+              "description": "Allow communication with unknown users",
+              "default": false
+            },
+            "moderatedChats": {
+              "type": "boolean",
+              "description": "Enable chat moderation",
+              "default": true
+            },
+            "allowPrivateMessages": {
+              "type": "boolean",
+              "description": "Allow private/direct messages",
+              "default": false
+            },
+            "approvedContacts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^did:"
+              },
+              "description": "List of approved contact DIDs"
+            }
+          }
+        },
+        "purchaseRestrictions": {
+          "type": "object",
+          "description": "Purchase and payment restrictions",
+          "properties": {
+            "allowPurchases": {
+              "type": "boolean",
+              "description": "Allow in-app/online purchases",
+              "default": false
+            },
+            "requireApproval": {
+              "type": "boolean",
+              "description": "Require guardian approval for purchases",
+              "default": true
+            },
+            "spendingLimit": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Maximum spending limit per period"
+            },
+            "spendingPeriod": {
+              "type": "string",
+              "enum": [
+                "daily",
+                "weekly",
+                "monthly"
+              ],
+              "description": "Spending limit period"
+            }
+          }
+        }
+      }
+    },
+    "screenTime": {
+      "type": "object",
+      "description": "Screen time and usage limits",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether screen time limits are enabled",
+          "default": false
+        },
+        "dailyLimit": {
+          "type": "string",
+          "pattern": "^\\d+h(\\d+m)?$",
+          "description": "Daily screen time limit (e.g., '2h', '2h30m')",
+          "examples": [
+            "1h",
+            "2h",
+            "2h30m",
+            "3h"
+          ]
+        },
+        "weekdayLimit": {
+          "type": "string",
+          "pattern": "^\\d+h(\\d+m)?$",
+          "description": "Weekday screen time limit"
+        },
+        "weekendLimit": {
+          "type": "string",
+          "pattern": "^\\d+h(\\d+m)?$",
+          "description": "Weekend screen time limit"
+        },
+        "bedtime": {
+          "type": "object",
+          "description": "Bedtime/downtime settings",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^\\d{2}:\\d{2}$",
+              "description": "Bedtime start (HH:MM)",
+              "examples": [
+                "20:00",
+                "21:00"
+              ]
+            },
+            "end": {
+              "type": "string",
+              "pattern": "^\\d{2}:\\d{2}$",
+              "description": "Bedtime end (HH:MM)",
+              "examples": [
+                "07:00",
+                "08:00"
+              ]
+            },
+            "timezone": {
+              "type": "string",
+              "description": "Timezone for bedtime (IANA format)"
+            }
+          }
+        },
+        "breaks": {
+          "type": "object",
+          "description": "Break reminders",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "intervalMinutes": {
+              "type": "integer",
+              "minimum": 15,
+              "description": "Minutes between break reminders"
+            }
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "minor",
+        "adult",
+        "emancipated_minor"
+      ],
+      "description": "Legal status of the profile owner"
+    },
+    "ageContext": {
+      "$ref": "#/definitions/ageContext"
+    },
+    "guardians": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/guardian"
+      },
+      "description": "List of guardians who manage this profile"
+    },
+    "primaryGuardian": {
+      "type": "string",
+      "pattern": "^did:",
+      "description": "DID of the primary guardian"
+    },
+    "contentSafety": {
+      "$ref": "#/definitions/contentSafety"
+    },
+    "screenTime": {
+      "$ref": "#/definitions/screenTime"
+    },
+    "enforcedByGuardian": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "description": "ID of the enforced policy"
+          },
+          "setBy": {
+            "type": "string",
+            "pattern": "^did:",
+            "description": "Guardian who set this policy"
+          },
+          "field": {
+            "type": "string",
+            "description": "Field path that is locked"
+          },
+          "value": {
+            "description": "Enforced value"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for enforcement"
+          },
+          "cannotOverride": {
+            "type": "boolean",
+            "description": "Whether child can override this setting",
+            "default": true
+          }
+        },
+        "required": [
+          "policyId",
+          "setBy",
+          "field",
+          "value"
+        ]
+      },
+      "description": "Settings enforced by guardians that the minor cannot change"
+    },
+    "activityReporting": {
+      "type": "object",
+      "description": "Activity reporting to guardians",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether activity reports are sent to guardians",
+          "default": false
+        },
+        "frequency": {
+          "type": "string",
+          "enum": [
+            "daily",
+            "weekly",
+            "monthly",
+            "real_time"
+          ],
+          "description": "How often reports are sent"
+        },
+        "includeDetails": {
+          "type": "boolean",
+          "description": "Include detailed activity logs",
+          "default": false
+        }
+      }
+    },
+    "legalCompliance": {
+      "type": "object",
+      "description": "Legal compliance information",
+      "properties": {
+        "coppaCompliant": {
+          "type": "boolean",
+          "description": "COPPA (US) compliance verified"
+        },
+        "gdprKidsCompliant": {
+          "type": "boolean",
+          "description": "GDPR Article 8 (EU) compliance verified"
+        },
+        "aadcCompliant": {
+          "type": "boolean",
+          "description": "AADC (UK) compliance verified"
+        },
+        "verificationDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When compliance was last verified"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "status": "minor",
+      "ageContext": {
+        "ageGroup": "child",
+        "ageRange": "8-12",
+        "isMinor": true,
+        "jurisdiction": "ES",
+        "digitalAgeOfConsent": 14,
+        "consentStatus": "parental_consent"
+      },
+      "guardians": [
+        {
+          "did": "did:a2p:user:local:parent-alice",
+          "relationship": "parent",
+          "permissions": [
+            "manage_profile",
+            "approve_proposals",
+            "set_policies",
+            "manage_content_safety"
+          ],
+          "consentGiven": "2025-01-01T00:00:00Z",
+          "consentMethod": "id_verification",
+          "isPrimary": true
+        }
+      ],
+      "primaryGuardian": "did:a2p:user:local:parent-alice",
+      "contentSafety": {
+        "enabled": true,
+        "maturityRating": "G",
+        "filterExplicitContent": true,
+        "filterViolence": true,
+        "safeSearch": "strict",
+        "chatRestrictions": {
+          "allowStrangers": false,
+          "moderatedChats": true
+        }
+      },
+      "screenTime": {
+        "enabled": true,
+        "dailyLimit": "2h",
+        "bedtime": {
+          "enabled": true,
+          "start": "20:00",
+          "end": "07:00"
+        }
+      }
+    }
+  ]
+}

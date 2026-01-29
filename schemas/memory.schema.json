@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2p.protocol/schemas/v0.1/memory.json",
+  "title": "A2P Memory",
+  "description": "A discrete piece of information about a user",
+  "type": "object",
+  "required": [
+    "id",
+    "content",
+    "source",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^mem_[a-zA-Z0-9]+$",
+      "description": "Unique memory identifier"
+    },
+    "content": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "The memory content"
+    },
+    "category": {
+      "type": "string",
+      "pattern": "^(a2p|ext):[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*$",
+      "description": "Memory category (e.g., a2p:preferences.communication)"
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "default": 0.8,
+      "description": "Confidence score (0.0 to 1.0)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "archived",
+        "expired"
+      ],
+      "description": "Memory status"
+    },
+    "sensitivity": {
+      "type": "string",
+      "enum": [
+        "public",
+        "standard",
+        "sensitive",
+        "restricted"
+      ],
+      "default": "standard",
+      "description": "Sensitivity level"
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sharing scope (e.g., ['work', 'general'])"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User-defined tags"
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": [
+        "type",
+        "timestamp"
+      ],
+      "description": "Origin of the memory",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "user_manual",
+            "user_import",
+            "agent_proposal",
+            "agent_direct",
+            "system_derived"
+          ],
+          "description": "How the memory was created"
+        },
+        "agentDid": {
+          "type": "string",
+          "pattern": "^did:",
+          "description": "DID of the agent that created/proposed this memory"
+        },
+        "agentName": {
+          "type": "string",
+          "description": "Human-readable agent name"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Session in which the memory was created"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the memory was created"
+        },
+        "context": {
+          "type": "string",
+          "description": "Additional context about memory creation"
+        },
+        "importSource": {
+          "type": "string",
+          "description": "External source for imported memories"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Memory metadata",
+      "properties": {
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the memory was approved"
+        },
+        "rejectedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the memory was rejected"
+        },
+        "archivedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the memory was archived"
+        },
+        "lastUsed": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last time the memory was accessed"
+        },
+        "useCount": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of times the memory was accessed"
+        },
+        "lastConfirmed": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last time the memory was confirmed accurate"
+        },
+        "initialConfidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Original confidence before decay"
+        },
+        "mergedFrom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "IDs of memories merged into this one"
+        },
+        "supersedes": {
+          "type": "string",
+          "description": "ID of memory this one replaces"
+        },
+        "supersededBy": {
+          "type": "string",
+          "description": "ID of memory that replaced this one"
+        },
+        "editHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "editedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "previousContent": {
+                "type": "string"
+              },
+              "editedBy": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "History of edits to this memory"
+        }
+      }
+    }
+  }
+}
