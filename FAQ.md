@@ -20,7 +20,7 @@ a2p is licensed under the **EUPL-1.2** (European Union Public Licence 1.2). This
 
 ### What version is currently available?
 
-We're currently at **0.1.0-alpha**. This is an alpha release, meaning the API may change before the stable 1.0.0 release.
+We're currently at **0.1.3**. This is an early release, meaning the API may change before the stable 1.0.0 release.
 
 ## SDK Usage
 

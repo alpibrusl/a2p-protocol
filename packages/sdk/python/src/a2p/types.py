@@ -10,6 +10,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from a2p._version import PROTOCOL_VERSION
+
 # ============================================================================
 # Enums
 # ============================================================================
@@ -927,7 +929,7 @@ class Profile(BaseModel):
     """Complete user profile"""
 
     id: str
-    version: str = "0.1.0-alpha"
+    version: str = PROTOCOL_VERSION
     profile_type: ProfileType = Field(alias="profileType")
     created: datetime | None = None
     updated: datetime | None = None

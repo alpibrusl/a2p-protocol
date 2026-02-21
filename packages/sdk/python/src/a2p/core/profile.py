@@ -8,6 +8,7 @@ import json
 from datetime import datetime, timezone
 from typing import Any
 
+from a2p._version import PROTOCOL_VERSION
 from a2p.types import (
     Common,
     CommonPreferences,
@@ -40,7 +41,7 @@ def create_profile(
 
     return Profile(
         id=profile_did,
-        version="0.1.0-alpha",
+        version=PROTOCOL_VERSION,
         profileType=profile_type,
         created=now,
         updated=now,

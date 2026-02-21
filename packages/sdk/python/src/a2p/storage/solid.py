@@ -25,6 +25,7 @@ import json
 
 import httpx
 
+from a2p._version import PROTOCOL_VERSION
 from a2p.client import ProfileStorage
 from a2p.types import Profile
 
@@ -149,7 +150,7 @@ class SolidStorage(ProfileStorage):
             data = {
                 did: profile_json,
                 "metadata": {
-                    "version": "0.1.0-alpha",
+                    "version": PROTOCOL_VERSION,
                     "updated": profile.updated.isoformat() if profile.updated else None,
                 },
             }
