@@ -9,6 +9,7 @@ from typing import Any
 
 import httpx
 
+from a2p._version import PROTOCOL_VERSION
 from a2p.client import ProfileStorage
 from a2p.types import Profile
 
@@ -230,7 +231,7 @@ class CloudStorage(ProfileStorage):
         # Build profile dict, handling cases where scopes weren't requested
         profile_dict: dict[str, Any] = {
             "id": profile_did,
-            "version": data.get("version", "0.1.0-alpha"),
+            "version": data.get("version", PROTOCOL_VERSION),
             "profileType": data.get("profileType") or data.get("profile_type"),
         }
 

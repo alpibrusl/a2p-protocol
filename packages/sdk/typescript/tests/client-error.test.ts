@@ -78,11 +78,11 @@ describe('A2PClient Error Handling', () => {
       new MemoryStorage()
     );
 
-    const hasPermission = await client.checkPermission({
-      userDid: 'did:a2p:user:test:nonexistent',
-      scope: 'a2p:preferences',
-      permission: 'read_scoped',
-    });
+    const hasPermission = await client.checkPermission(
+      'did:a2p:user:test:nonexistent',
+      'read_scoped',
+      'a2p:preferences',
+    );
 
     expect(hasPermission).toBe(false);
   });

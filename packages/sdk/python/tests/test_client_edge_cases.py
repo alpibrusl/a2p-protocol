@@ -2,6 +2,7 @@
 
 import pytest
 
+from a2p import PROTOCOL_VERSION
 from a2p.client import A2PClient, A2PUserClient, MemoryStorage
 from a2p.core.profile import add_policy, create_profile
 
@@ -96,7 +97,7 @@ class TestA2PUserClientEdgeCases:
         profile = await client.create_profile()
 
         assert profile.id is not None
-        assert profile.version == "1.0"
+        assert profile.version == PROTOCOL_VERSION
         assert profile.profile_type == "human"
 
     @pytest.mark.asyncio
@@ -117,7 +118,7 @@ class TestA2PUserClientEdgeCases:
         await client.add_memory(content="Memory 2", category="a2p:preferences")
 
         profile = client.get_profile()
-        episodic = profile.memories.get("a2p:episodic", [])
+        episodic = profile.memories.episodic or []
         assert len(episodic) == 2
 
     @pytest.mark.asyncio
@@ -141,7 +142,7 @@ class TestA2PUserClientEdgeCases:
         await client.remove_memory(memory.id)
 
         profile = client.get_profile()
-        episodic = profile.memories.get("a2p:episodic", [])
+        episodic = profile.memories.episodic or []
         assert len(episodic) == 0
 
     @pytest.mark.asyncio
@@ -172,7 +173,7 @@ class TestA2PUserClientEdgeCases:
 
         profile = client.get_profile()
         assert profile.memories is not None
-        episodic = profile.memories.get("a2p:episodic", [])
+        episodic = profile.memories.episodic or []
         assert len(episodic) == 0
 
     @pytest.mark.asyncio
