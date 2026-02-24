@@ -19,6 +19,10 @@ from a2p.utils.id import (
     parse_did,
 )
 
+# Note: DID format changed to require namespace segment.
+# Valid: did:a2p:user:gaugid:alice (5-segment)
+# Invalid: did:a2p:user:alice (4-segment, missing namespace)
+
 
 class TestIDGeneration:
     """Test ID generation functions"""

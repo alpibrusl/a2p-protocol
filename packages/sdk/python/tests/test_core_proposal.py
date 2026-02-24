@@ -32,7 +32,7 @@ class TestCreateProposal:
         assert proposal.memory.category == "a2p:preferences"
         assert proposal.memory.confidence == 0.8
         assert proposal.status == ProposalStatus.PENDING
-        assert proposal.proposed_by.agent_did == "did:a2p:agent:test"
+        assert proposal.proposed_by["agentDid"] == "did:a2p:agent:test"
 
     def test_create_proposal_with_expiry(self):
         """Test creating proposal with expiry"""
@@ -113,7 +113,9 @@ class TestProposalApproval:
         assert memory.content == "User likes Python"
         assert memory.category == "a2p:preferences"
         assert memory.status == MemoryStatus.APPROVED
-        assert len(updated_profile.pending_proposals) == 0
+        # Proposal remains in list but with APPROVED status
+        assert len(updated_profile.pending_proposals) == 1
+        assert updated_profile.pending_proposals[0].status == ProposalStatus.APPROVED
         assert len(updated_profile.memories.episodic) == 1
 
     def test_approve_proposal_with_edits(self):
@@ -158,9 +160,9 @@ class TestProposalRejection:
 
         updated = reject_proposal(profile, proposal.id, reason="Not relevant")
 
-        assert len(updated.pending_proposals) == 0
-        # Check that proposal was marked as rejected
-        # (implementation may vary)
+        # Proposal remains in list but with REJECTED status
+        assert len(updated.pending_proposals) == 1
+        assert updated.pending_proposals[0].status == ProposalStatus.REJECTED
 
     def test_reject_proposal_not_found(self):
         """Test rejecting non-existent proposal fails"""

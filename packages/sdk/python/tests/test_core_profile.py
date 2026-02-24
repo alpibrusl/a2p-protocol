@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 
 import pytest
 
+from a2p._version import PROTOCOL_VERSION
 from a2p.core.profile import (
     add_memory,
     add_policy,
@@ -26,6 +27,7 @@ from a2p.types import (
     CommonPreferences,
     MemorySource,
     MemoryStatus,
+    PermissionLevel,
     ProfileType,
     SubProfile,
 )
@@ -38,7 +40,7 @@ class TestCreateProfile:
         """Test creating profile with defaults"""
         profile = create_profile()
         assert profile.id.startswith("did:a2p:user:")
-        assert profile.version == "1.0"
+        assert profile.version == PROTOCOL_VERSION
         assert profile.profile_type == ProfileType.HUMAN
         assert profile.identity.did == profile.id
         assert profile.memories is not None
@@ -63,7 +65,7 @@ class TestUpdateProfile:
     def test_update_identity(self):
         """Test updating profile identity"""
         profile = create_profile()
-        updated = update_identity(profile, display_name="Bob")
+        updated = update_identity(profile, displayName="Bob")
         assert updated.identity.display_name == "Bob"
         assert updated.updated > profile.updated
 
@@ -173,18 +175,22 @@ class TestPolicyManagement:
         updated = add_policy(
             profile,
             agent_pattern="did:a2p:agent:*",
-            permissions=["read", "propose"],
+            permissions=[PermissionLevel.READ_SCOPED, PermissionLevel.PROPOSE],
             allow=["a2p:preferences.*"],
         )
         assert len(updated.access_policies) == 1
         policy = updated.access_policies[0]
         assert policy.agent_pattern == "did:a2p:agent:*"
-        assert "read" in policy.permissions
+        assert PermissionLevel.READ_SCOPED in policy.permissions
 
     def test_update_policy(self):
         """Test updating a policy"""
         profile = create_profile()
-        profile = add_policy(profile, agent_pattern="did:a2p:agent:*", permissions=["read"])
+        profile = add_policy(
+            profile,
+            agent_pattern="did:a2p:agent:*",
+            permissions=[PermissionLevel.READ_SCOPED],
+        )
         policy_id = profile.access_policies[0].id
 
         updated = update_policy(profile, policy_id, enabled=False)
@@ -193,7 +199,11 @@ class TestPolicyManagement:
     def test_remove_policy(self):
         """Test removing a policy"""
         profile = create_profile()
-        profile = add_policy(profile, agent_pattern="did:a2p:agent:*", permissions=["read"])
+        profile = add_policy(
+            profile,
+            agent_pattern="did:a2p:agent:*",
+            permissions=[PermissionLevel.READ_SCOPED],
+        )
         policy_id = profile.access_policies[0].id
 
         updated = remove_policy(profile, policy_id)
@@ -222,7 +232,7 @@ class TestProfileFiltering:
         """Test filtering profile with memory scopes"""
         profile = create_profile()
         profile = add_memory(profile, content="Test", category="a2p:preferences")
-        filtered = get_filtered_profile(profile, ["a2p:preferences.*"])
+        filtered = get_filtered_profile(profile, ["a2p:episodic", "a2p:preferences.*"])
         assert "memories" in filtered
         assert len(filtered["memories"]["a2p:episodic"]) == 1
 

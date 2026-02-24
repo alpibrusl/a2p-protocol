@@ -125,7 +125,7 @@ def add_memory(
     episodic = list(memories.episodic or [])
     episodic.append(memory)
 
-    new_memories = memories.model_copy(update={"a2p:episodic": episodic})
+    new_memories = memories.model_copy(update={"episodic": episodic})
 
     return profile.model_copy(
         update={
@@ -174,7 +174,7 @@ def update_memory(
     updated_memory = memory.model_copy(update=kwargs)
     episodic[memory_index] = updated_memory
 
-    new_memories = memories.model_copy(update={"a2p:episodic": episodic})
+    new_memories = memories.model_copy(update={"episodic": episodic})
 
     return profile.model_copy(
         update={
@@ -204,7 +204,7 @@ def remove_memory(profile: Profile, memory_id: str) -> Profile:
         if mem_id != memory_id:
             filtered_episodic.append(m)
 
-    new_memories = memories.model_copy(update={"a2p:episodic": filtered_episodic})
+    new_memories = memories.model_copy(update={"episodic": filtered_episodic})
 
     return profile.model_copy(
         update={

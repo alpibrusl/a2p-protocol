@@ -215,7 +215,7 @@ class CloudStorage(ProfileStorage):
         Handles version differences and ensures compatibility.
         """
         # Convert Profile to dict matching API schema
-        return profile.model_dump(mode="json", exclude_none=True)
+        return profile.model_dump(mode="json", by_alias=True, exclude_none=True)
 
     def _deserialize_profile(self, data: dict) -> Profile:
         """
@@ -225,6 +225,11 @@ class CloudStorage(ProfileStorage):
         """
         # Handle API response format - may have different field names
         # Map API fields to Profile model fields
+
+        # If data contains a "profile" key, extract it
+        if "profile" in data and isinstance(data["profile"], dict):
+            data = data["profile"]
+
         # Get profile DID (from id field or did field in response)
         profile_did = data.get("id") or data.get("did") or ""
 
@@ -254,5 +259,14 @@ class CloudStorage(ProfileStorage):
 
         if "settings" in data:
             profile_dict["settings"] = data["settings"]
+
+        if "subProfiles" in data:
+            profile_dict["subProfiles"] = data["subProfiles"]
+
+        if "pendingProposals" in data:
+            profile_dict["pendingProposals"] = data["pendingProposals"]
+
+        if "accessPolicies" in data:
+            profile_dict["accessPolicies"] = data["accessPolicies"]
 
         return Profile.model_validate(profile_dict)

@@ -222,7 +222,7 @@ class TestA2PClient:
 
         assert "profile" in response
         assert "consent" in response
-        assert response["consent"]["granted"]
+        assert len(response["consent"].granted_scopes) > 0
 
     @pytest.mark.asyncio
     async def test_request_access_denied(self):
@@ -265,7 +265,7 @@ class TestA2PClient:
         )
 
         assert "id" in profile_data
-        assert "common" in profile_data
+        assert "version" in profile_data
 
     @pytest.mark.asyncio
     async def test_propose_memory(self):

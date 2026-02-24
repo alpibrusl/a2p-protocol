@@ -17,7 +17,10 @@ class TestCloudStorage:
         storage = CloudStorage(api_url="https://api.example.com", auth_token="test-token")
 
         mock_profile = create_profile()
-        mock_response = {"success": True, "data": {"profile": mock_profile.model_dump()}}
+        mock_response = {
+            "success": True,
+            "data": {"profile": mock_profile.model_dump(by_alias=True, mode="json")},
+        }
 
         with patch.object(storage._client, "get") as mock_get:
             mock_get.return_value = AsyncMock(
@@ -48,7 +51,10 @@ class TestCloudStorage:
         storage = CloudStorage(api_url="https://api.example.com", auth_token="test-token")
 
         mock_profile = create_profile()
-        mock_response = {"success": True, "data": {"profile": mock_profile.model_dump()}}
+        mock_response = {
+            "success": True,
+            "data": {"profile": mock_profile.model_dump(by_alias=True, mode="json")},
+        }
 
         with patch.object(storage._client, "get") as mock_get:
             mock_get.return_value = AsyncMock(
@@ -68,7 +74,10 @@ class TestCloudStorage:
         storage = CloudStorage(api_url="https://api.example.com", auth_token="test-token")
 
         profile = create_profile()
-        mock_response = {"success": True, "data": {"profile": profile.model_dump()}}
+        mock_response = {
+            "success": True,
+            "data": {"profile": profile.model_dump(by_alias=True, mode="json")},
+        }
 
         with patch.object(storage._client, "put") as mock_put:
             mock_put.return_value = AsyncMock(
@@ -121,7 +130,7 @@ class TestCloudStorage:
 
         mock_response = {
             "success": True,
-            "data": {"proposal": {"id": "prop_123", "status": "pending"}},
+            "data": {"proposalId": "prop_123", "status": "pending"},
         }
 
         with patch.object(storage._client, "post") as mock_post:
@@ -136,7 +145,7 @@ class TestCloudStorage:
             )
 
             assert result is not None
-            assert result["id"] == "prop_123"
+            assert result["proposal_id"] == "prop_123"
             mock_post.assert_called_once()
 
     @pytest.mark.asyncio
@@ -154,5 +163,5 @@ class TestCloudStorage:
             await storage.get("did:a2p:user:test:123")
 
             # Verify headers were set in client initialization
-            assert storage._client.headers["Authorization"] == "Bearer test-token"
-            assert storage._client.headers["A2P-Agent-DID"] == "did:a2p:agent:test"
+            assert storage._client.headers["authorization"] == "Bearer test-token"
+            assert storage._client.headers["a2p-agent-did"] == "did:a2p:agent:test"
