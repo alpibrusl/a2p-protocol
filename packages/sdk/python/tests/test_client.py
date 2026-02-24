@@ -108,6 +108,8 @@ class TestA2PUserClient:
             category="a2p:preferences",
         )
 
+        # Reload profile from storage to see the proposal added by the agent
+        await client.load_profile(user_did)
         proposals = client.get_pending_proposals()
         assert len(proposals) == 1
         assert proposals[0].memory.content == "Test proposal"
@@ -137,6 +139,9 @@ class TestA2PUserClient:
             content="Test proposal",
             category="a2p:preferences",
         )
+
+        # Reload profile from storage to see the proposal added by the agent
+        await client.load_profile(user_did)
 
         # Approve it
         memory = await client.approve_proposal(result["proposal_id"])
@@ -168,6 +173,9 @@ class TestA2PUserClient:
             content="Test proposal",
             category="a2p:preferences",
         )
+
+        # Reload profile from storage to see the proposal added by the agent
+        await client.load_profile(user_did)
 
         # Reject it
         await client.reject_proposal(result["proposal_id"], reason="Not relevant")

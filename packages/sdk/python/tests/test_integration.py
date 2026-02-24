@@ -28,11 +28,9 @@ class TestEndToEndWorkflows:
         # 2. User adds policy for agent
         updated_profile = add_policy(
             profile,
-            {
-                "agent_pattern": "did:a2p:agent:*",
-                "permissions": ["read_scoped", "propose"],
-                "allow": ["a2p:preferences.*"],
-            },
+            agent_pattern="did:a2p:agent:*",
+            permissions=["read_scoped", "propose"],
+            allow=["a2p:preferences.*"],
         )
         await storage.set(profile.id, updated_profile)
         await user_client.load_profile(profile.id)
@@ -78,11 +76,9 @@ class TestEndToEndWorkflows:
 
         updated_profile = add_policy(
             profile,
-            {
-                "agent_pattern": "did:a2p:agent:*",
-                "permissions": ["read_scoped"],
-                "allow": ["a2p:preferences.*"],
-            },
+            agent_pattern="did:a2p:agent:*",
+            permissions=["read_scoped"],
+            allow=["a2p:preferences.*"],
         )
         await storage.set(profile.id, updated_profile)
 
@@ -116,7 +112,7 @@ class TestEndToEndWorkflows:
         imported = await client2.import_profile(json_str)
 
         assert imported.identity.display_name == "Charlie"
-        episodic = imported.memories.get("a2p:episodic", [])
+        episodic = imported.memories.episodic if imported.memories else []
         assert len(episodic) == 1
         assert episodic[0].content == "Likes Python programming"
 
@@ -132,11 +128,9 @@ class TestEndToEndWorkflows:
         # Add policy
         updated_profile = add_policy(
             profile,
-            {
-                "agent_pattern": "did:a2p:agent:*",
-                "permissions": ["propose"],
-                "allow": ["a2p:preferences.*"],
-            },
+            agent_pattern="did:a2p:agent:*",
+            permissions=["propose"],
+            allow=["a2p:preferences.*"],
         )
         await storage.set(profile.id, updated_profile)
 
@@ -175,11 +169,9 @@ class TestConcurrentOperations:
         # Add policy for both agents
         updated_profile = add_policy(
             profile,
-            {
-                "agent_pattern": "did:a2p:agent:*",
-                "permissions": ["read_scoped"],
-                "allow": ["a2p:preferences.*"],
-            },
+            agent_pattern="did:a2p:agent:*",
+            permissions=["read_scoped"],
+            allow=["a2p:preferences.*"],
         )
         await storage.set(profile.id, updated_profile)
 
