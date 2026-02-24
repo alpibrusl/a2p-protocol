@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from a2p import PROTOCOL_VERSION
 from a2p.storage.solid import SolidStorage
 
 
@@ -100,7 +101,7 @@ async def test_delete_profile(solid_storage, sample_profile):
     existing_data = {
         sample_profile.id: sample_profile.model_dump(by_alias=True, mode="json"),
         "did:a2p:user:local:other": {"id": "did:a2p:user:local:other"},
-        "metadata": {"version": "0.1.0-alpha"},
+        "metadata": {"version": PROTOCOL_VERSION},
     }
 
     with patch("httpx.AsyncClient") as mock_client:

@@ -2,8 +2,10 @@
 
 import pytest
 
+from a2p import PROTOCOL_VERSION
 from a2p.client import A2PClient, A2PUserClient, MemoryStorage
 from a2p.core.profile import add_policy, create_profile
+from a2p.types import MemoryStatus
 
 
 class TestA2PClientEdgeCases:
@@ -12,15 +14,15 @@ class TestA2PClientEdgeCases:
     @pytest.mark.asyncio
     async def test_empty_scopes_array(self):
         """Test handling empty scopes array"""
+        from a2p.types import PermissionLevel
+
         storage = MemoryStorage()
         profile = create_profile()
         profile = add_policy(
             profile,
-            {
-                "agent_pattern": "did:a2p:agent:*",
-                "permissions": ["read_scoped"],
-                "allow": ["a2p:*"],
-            },
+            agent_pattern="did:a2p:agent:*",
+            permissions=[PermissionLevel.READ_SCOPED],
+            allow=["a2p:*"],
         )
         await storage.set(profile.id, profile)
 
@@ -33,16 +35,16 @@ class TestA2PClientEdgeCases:
     @pytest.mark.asyncio
     async def test_multiple_scopes_partial_access(self):
         """Test handling multiple scopes with partial access"""
+        from a2p.types import PermissionLevel
+
         storage = MemoryStorage()
         profile = create_profile()
         profile = add_policy(
             profile,
-            {
-                "agent_pattern": "did:a2p:agent:*",
-                "permissions": ["read_scoped"],
-                "allow": ["a2p:preferences.communication"],
-                "deny": ["a2p:preferences.sensitive"],
-            },
+            agent_pattern="did:a2p:agent:*",
+            permissions=[PermissionLevel.READ_SCOPED],
+            allow=["a2p:preferences.communication"],
+            deny=["a2p:preferences.sensitive"],
         )
         await storage.set(profile.id, profile)
 
@@ -96,8 +98,8 @@ class TestA2PUserClientEdgeCases:
         profile = await client.create_profile()
 
         assert profile.id is not None
-        assert profile.version == "1.0"
-        assert profile.profile_type == "human"
+        assert profile.version == PROTOCOL_VERSION
+        assert profile.profile_type.value == "human"
 
     @pytest.mark.asyncio
     async def test_create_profile_with_options(self):
@@ -117,7 +119,7 @@ class TestA2PUserClientEdgeCases:
         await client.add_memory(content="Memory 2", category="a2p:preferences")
 
         profile = client.get_profile()
-        episodic = profile.memories.get("a2p:episodic", [])
+        episodic = profile.memories.episodic or []
         assert len(episodic) == 2
 
     @pytest.mark.asyncio
@@ -141,7 +143,7 @@ class TestA2PUserClientEdgeCases:
         await client.remove_memory(memory.id)
 
         profile = client.get_profile()
-        episodic = profile.memories.get("a2p:episodic", [])
+        episodic = profile.memories.episodic or []
         assert len(episodic) == 0
 
     @pytest.mark.asyncio
@@ -153,7 +155,7 @@ class TestA2PUserClientEdgeCases:
 
         archived = await client.archive_memory(memory.id)
 
-        assert archived.status == "archived"
+        assert archived.status == MemoryStatus.ARCHIVED
 
     @pytest.mark.asyncio
     async def test_empty_pending_proposals(self):
@@ -172,7 +174,7 @@ class TestA2PUserClientEdgeCases:
 
         profile = client.get_profile()
         assert profile.memories is not None
-        episodic = profile.memories.get("a2p:episodic", [])
+        episodic = profile.memories.episodic or []
         assert len(episodic) == 0
 
     @pytest.mark.asyncio
