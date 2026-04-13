@@ -120,7 +120,7 @@ def generate_org_did(
 
 def is_valid_did(did: str) -> bool:
     """Check if a string is a valid DID"""
-    return bool(re.match(r"^did:[a-z0-9]+:[a-zA-Z0-9._-]+$", did))
+    return bool(re.match(r"^did:[a-z0-9]+:[a-zA-Z0-9._-]+(?::[a-zA-Z0-9._-]+)*$", did))
 
 
 # DID type patterns as per a2p protocol spec Section 4.4

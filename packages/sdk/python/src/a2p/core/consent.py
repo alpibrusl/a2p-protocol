@@ -188,8 +188,8 @@ def revoke_consent(receipt: ConsentReceipt, reason: str | None = None) -> Consen
     """Revoke a consent receipt"""
     return receipt.model_copy(
         update={
-            "revokedAt": datetime.now(timezone.utc),
-            "revokedReason": reason,
+            "revoked_at": datetime.now(timezone.utc),
+            "revoked_reason": reason,
         }
     )
 

@@ -163,7 +163,7 @@ def approve_proposal(
     episodic = list(memories.episodic or []) if memories else []
     episodic.append(memory)
 
-    new_memories = (memories or profile.memories).model_copy(update={"a2p:episodic": episodic})
+    new_memories = (memories or profile.memories).model_copy(update={"episodic": episodic})
 
     updated_profile = profile.model_copy(
         update={

@@ -7,6 +7,8 @@
  * @packageDocumentation
  */
 
+import pkg from '../package.json';
+
 // ============================================================================
 // Client Exports
 // ============================================================================
@@ -224,5 +226,5 @@ export type {
 // Version
 // ============================================================================
 
-export const VERSION = '0.1.0';
-export const PROTOCOL_VERSION = '0.1.0-alpha';
+export const VERSION = pkg.version;
+export const PROTOCOL_VERSION = pkg.version;

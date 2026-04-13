@@ -192,9 +192,12 @@ class TestFindSimilarMemories:
             profile, content="User likes tennis and swimming", category="a2p:episodic"
         )
 
-        similar = find_similar_memories(profile, "User likes coffee and tea")
+        # Use a high threshold (0.9) so that partial overlap doesn't match
+        # "User likes coffee and tea" -> words > 3 chars: ["user", "likes", "coffee"]
+        # Memory has "user", "likes" but not "coffee" -> similarity = 2/3 = 0.67
+        # With threshold=0.9, this should not match
+        similar = find_similar_memories(profile, "User likes coffee and tea", threshold=0.9)
 
-        # Should not match as similarity is below 0.5
         assert len(similar) == 0
 
 

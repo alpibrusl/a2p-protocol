@@ -21,7 +21,7 @@
   <a href="https://github.com/a2p-protocol/a2p/actions/workflows/test.yml"><img src="https://github.com/a2p-protocol/a2p/actions/workflows/test.yml/badge.svg" alt="Tests"></a>
   <a href="https://codecov.io/gh/a2p-protocol/a2p"><img src="https://codecov.io/gh/a2p-protocol/a2p/branch/main/graph/badge.svg" alt="Coverage"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-EUPL--1.2-blue.svg" alt="License: EUPL-1.2"></a>
-  <img src="https://img.shields.io/badge/version-0.1.0--alpha-orange.svg" alt="Version: 0.1.0-alpha">
+  <img src="https://img.shields.io/badge/version-0.1.3-orange.svg" alt="Version: 0.1.3">
 </p>
 
 ---
@@ -291,7 +291,7 @@ await client.propose_memory(
 |-----------|---------|-------------|
 | LangGraph | [`@a2p/langgraph`](packages/adapters/langgraph/typescript) | Memory store integration |
 | CrewAI | [`a2p-crewai`](packages/adapters/crewai/python) | Agent memory integration |
-| Mastra | [`@a2p/mastra`](packages/adapter-mastra) | Tool provider integration |
+
 
 ---
 

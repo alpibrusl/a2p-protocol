@@ -47,11 +47,11 @@ class TestA2PUserClientErrorHandling:
 
     @pytest.mark.asyncio
     async def test_load_profile_not_found(self):
-        """Test loading non-existent profile"""
+        """Test loading non-existent profile returns None"""
         client = A2PUserClient()
 
-        with pytest.raises(Exception, match="Profile not found"):
-            await client.load_profile("did:a2p:user:local:nonexistent")
+        result = await client.load_profile("did:a2p:user:local:nonexistent")
+        assert result is None
 
     @pytest.mark.asyncio
     async def test_approve_proposal_not_found(self):
@@ -80,20 +80,20 @@ class TestA2PUserClientErrorHandling:
             await client.add_memory(content="Test memory", category="a2p:preferences")
 
     @pytest.mark.asyncio
-    async def test_update_memory_without_profile(self):
-        """Test updating memory without profile"""
+    async def test_save_profile_without_profile(self):
+        """Test saving profile without loading one"""
         client = A2PUserClient()
 
         with pytest.raises(Exception, match="No profile loaded"):
-            await client.update_memory(memory_id="mem_123", content="Updated content")
+            await client.save_profile()
 
     @pytest.mark.asyncio
-    async def test_remove_memory_without_profile(self):
-        """Test removing memory without profile"""
+    async def test_approve_proposal_without_profile(self):
+        """Test approving proposal without profile"""
         client = A2PUserClient()
 
         with pytest.raises(Exception, match="No profile loaded"):
-            await client.remove_memory("mem_123")
+            await client.approve_proposal("prop_123")
 
     @pytest.mark.asyncio
     async def test_export_profile_without_profile(self):

@@ -8,7 +8,9 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+
+from a2p._version import PROTOCOL_VERSION
 
 # ============================================================================
 # Enums
@@ -95,8 +97,7 @@ class PublicKey(BaseModel):
     type: Literal["Ed25519", "secp256k1", "P-256"]
     public_key_multibase: str = Field(alias="publicKeyMultibase")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Identity(BaseModel):
@@ -109,8 +110,7 @@ class Identity(BaseModel):
     recovery_methods: list[str] | None = Field(default=None, alias="recoveryMethods")
     age_context: "AgeContext | None" = Field(default=None, alias="ageContext")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ============================================================================
@@ -137,8 +137,7 @@ class ContentPreferences(BaseModel):
     example_language: str | None = Field(default=None, alias="exampleLanguage")
     language: str | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ============================================================================
@@ -180,8 +179,7 @@ class VisionAccessibility(BaseModel):
         default=None, alias="fontSize"
     )
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CaptionSettings(BaseModel):
@@ -202,8 +200,7 @@ class HearingAccessibility(BaseModel):
     sign_language: str | None = Field(default=None, alias="signLanguage")
     mono_audio: bool = Field(default=False, alias="monoAudio")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MotorAccessibility(BaseModel):
@@ -216,8 +213,7 @@ class MotorAccessibility(BaseModel):
     large_click_targets: bool = Field(default=False, alias="largeClickTargets")
     extended_timeouts: bool = Field(default=False, alias="extendedTimeouts")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ReadingAssistance(BaseModel):
@@ -233,8 +229,7 @@ class ReadingAssistance(BaseModel):
     focus_mode: bool = Field(default=False, alias="focusMode")
     reading_guide: bool = Field(default=False, alias="readingGuide")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CognitiveAccessibility(BaseModel):
@@ -247,8 +242,7 @@ class CognitiveAccessibility(BaseModel):
     clear_navigation: bool = Field(default=False, alias="clearNavigation")
     plain_language: bool = Field(default=False, alias="plainLanguage")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class SensoryAccessibility(BaseModel):
@@ -259,8 +253,7 @@ class SensoryAccessibility(BaseModel):
     quiet_mode: bool = Field(default=False, alias="quietMode")
     haptic_feedback: bool = Field(default=True, alias="hapticFeedback")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MobilityAccessibility(BaseModel):
@@ -277,8 +270,7 @@ class MobilityAccessibility(BaseModel):
     requires_elevator: bool = Field(default=False, alias="requiresElevator")
     requires_accessible_bathroom: bool = Field(default=False, alias="requiresAccessibleBathroom")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ServiceAnimal(BaseModel):
@@ -312,8 +304,7 @@ class MedicalDevices(BaseModel):
     prosthetic: bool = False
     other: list[str] | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Allergies(BaseModel):
@@ -325,8 +316,7 @@ class Allergies(BaseModel):
     severity: dict[str, Literal["mild", "moderate", "severe", "anaphylactic"]] | None = None
     epi_pen_carrier: bool = Field(default=False, alias="epiPenCarrier")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class DietaryRequirements(BaseModel):
@@ -337,8 +327,7 @@ class DietaryRequirements(BaseModel):
     medical_diets: list[str] | None = Field(default=None, alias="medicalDiets")
     preferences: list[str] | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class EmergencyContact(BaseModel):
@@ -364,8 +353,7 @@ class SpecialAssistance(BaseModel):
     ) = Field(default=None, alias="preferredSeating")
     quiet_environment: bool = Field(default=False, alias="quietEnvironment")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class EmergencyInfo(BaseModel):
@@ -378,8 +366,7 @@ class EmergencyInfo(BaseModel):
     )
     do_not_resuscitate: bool = Field(default=False, alias="doNotResuscitate")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class PhysicalAccessibility(BaseModel):
@@ -393,8 +380,7 @@ class PhysicalAccessibility(BaseModel):
     special_assistance: SpecialAssistance | None = Field(default=None, alias="specialAssistance")
     emergency_info: EmergencyInfo | None = Field(default=None, alias="emergencyInfo")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class AccessibilityPreferences(BaseModel):
@@ -407,8 +393,7 @@ class AccessibilityPreferences(BaseModel):
     sensory: SensoryAccessibility | None = None
     physical: PhysicalAccessibility | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ============================================================================
@@ -429,8 +414,7 @@ class AgeContext(BaseModel):
         default=None, alias="consentStatus"
     )
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Guardian(BaseModel):
@@ -444,8 +428,7 @@ class Guardian(BaseModel):
     consent_given: datetime = Field(alias="consentGiven")
     expires_at: datetime | None = Field(default=None, alias="expiresAt")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ChatRestrictions(BaseModel):
@@ -455,8 +438,7 @@ class ChatRestrictions(BaseModel):
     moderated_chats: bool = Field(default=True, alias="moderatedChats")
     predefined_phrases_only: bool = Field(default=False, alias="predefinedPhrasesOnly")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class PurchaseControls(BaseModel):
@@ -465,8 +447,7 @@ class PurchaseControls(BaseModel):
     require_approval: bool = Field(default=True, alias="requireApproval")
     spending_limit: float = Field(default=0, alias="spendingLimit")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ScreenTime(BaseModel):
@@ -477,8 +458,7 @@ class ScreenTime(BaseModel):
     bedtime: str | None = None
     break_reminders: bool = Field(default=True, alias="breakReminders")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ContentSafety(BaseModel):
@@ -498,8 +478,7 @@ class ContentSafety(BaseModel):
     purchase_controls: PurchaseControls | None = Field(default=None, alias="purchaseControls")
     screen_time: ScreenTime | None = Field(default=None, alias="screenTime")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Guardianship(BaseModel):
@@ -509,8 +488,7 @@ class Guardianship(BaseModel):
     managed_by: str | None = Field(default=None, alias="managedBy")
     content_safety: ContentSafety | None = Field(default=None, alias="contentSafety")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CommonPreferences(BaseModel):
@@ -541,8 +519,7 @@ class CategoryIdentity(BaseModel):
     birth_year: int | None = Field(default=None, alias="birthYear")
     location: dict[str, str | None] | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CategoryPreferences(BaseModel):
@@ -566,8 +543,7 @@ class CategoryProfessional(BaseModel):
         default=None, alias="workStyle"
     )
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CategoryInterests(BaseModel):
@@ -589,8 +565,7 @@ class CategoryContext(BaseModel):
     ongoing_goals: list[str] | None = Field(default=None, alias="ongoingGoals")
     current_focus: str | None = Field(default=None, alias="currentFocus")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CategoryHealth(BaseModel):
@@ -627,8 +602,7 @@ class MemorySource(BaseModel):
     context: str | None = None
     import_source: str | None = Field(default=None, alias="importSource")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MemoryMetadata(BaseModel):
@@ -645,8 +619,7 @@ class MemoryMetadata(BaseModel):
     supersedes: str | None = None
     superseded_by: str | None = Field(default=None, alias="supersededBy")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Memory(BaseModel):
@@ -680,9 +653,7 @@ class Memories(BaseModel):
     semantic: list[Memory] | None = Field(default=None, alias="a2p:semantic")
     procedural: list[Memory] | None = Field(default=None, alias="a2p:procedural")
 
-    class Config:
-        populate_by_name = True
-        extra = "allow"
+    model_config = ConfigDict(populate_by_name=True, extra="allow")
 
 
 # ============================================================================
@@ -701,8 +672,7 @@ class SubProfile(BaseModel):
     specialized: dict[str, Any] | None = None
     share_with: list[str] | None = Field(default=None, alias="shareWith")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ============================================================================
@@ -721,8 +691,7 @@ class PolicyConditions(BaseModel):
     require_https: bool | None = Field(default=True, alias="requireHttps")
     max_data_retention: str | None = Field(default=None, alias="maxDataRetention")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ConsentPolicy(BaseModel):
@@ -746,8 +715,7 @@ class ConsentPolicy(BaseModel):
     created: datetime | None = None
     updated: datetime | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ConsentProof(BaseModel):
@@ -761,8 +729,7 @@ class ConsentProof(BaseModel):
     location: str | None = None
     blockchain_ref: dict[str, Any] | None = Field(default=None, alias="blockchainRef")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ConsentReceipt(BaseModel):
@@ -798,8 +765,7 @@ class ConsentReceipt(BaseModel):
     ) = Field(default=None, alias="legalBasis")
     proof: ConsentProof | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ============================================================================
@@ -827,8 +793,7 @@ class ProposedMemory(BaseModel):
     suggested_scope: list[str] | None = Field(default=None, alias="suggestedScope")
     suggested_tags: list[str] | None = Field(default=None, alias="suggestedTags")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ProposalResolution(BaseModel):
@@ -841,8 +806,7 @@ class ProposalResolution(BaseModel):
     reason: str | None = None
     created_memory_id: str | None = Field(default=None, alias="createdMemoryId")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Proposal(BaseModel):
@@ -860,8 +824,7 @@ class Proposal(BaseModel):
     priority: Literal["low", "normal", "high"] = "normal"
     similar_to: list[str] | None = Field(default=None, alias="similarTo")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ============================================================================
@@ -878,8 +841,7 @@ class MemorySettings(BaseModel):
     review_threshold: float = Field(default=0.5, alias="reviewThreshold")
     archive_threshold: float = Field(default=0.3, alias="archiveThreshold")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class NotificationSettings(BaseModel):
@@ -889,8 +851,7 @@ class NotificationSettings(BaseModel):
     access_notifications: bool = Field(default=False, alias="accessNotifications")
     consolidation_reminders: bool = Field(default=True, alias="consolidationReminders")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class PrivacySettings(BaseModel):
@@ -901,8 +862,7 @@ class PrivacySettings(BaseModel):
     )
     allow_anonymous_access: bool = Field(default=False, alias="allowAnonymousAccess")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ProfileSettings(BaseModel):
@@ -914,8 +874,7 @@ class ProfileSettings(BaseModel):
     )
     privacy_settings: PrivacySettings | None = Field(default=None, alias="privacySettings")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ============================================================================
@@ -927,7 +886,7 @@ class Profile(BaseModel):
     """Complete user profile"""
 
     id: str
-    version: str = "0.1.0-alpha"
+    version: str = PROTOCOL_VERSION
     profile_type: ProfileType = Field(alias="profileType")
     created: datetime | None = None
     updated: datetime | None = None
@@ -940,8 +899,7 @@ class Profile(BaseModel):
     settings: ProfileSettings | None = None
     guardianship: Guardianship | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ============================================================================
@@ -963,8 +921,7 @@ class AgentIdentity(BaseModel):
     a2a_card: str | None = Field(default=None, alias="a2aCard")
     tags: list[str] | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class AgentOperator(BaseModel):
@@ -981,8 +938,7 @@ class AgentOperator(BaseModel):
     verified: bool | None = None
     verified_by: str | None = Field(default=None, alias="verifiedBy")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class AgentA2PSupport(BaseModel):
@@ -996,8 +952,7 @@ class AgentA2PSupport(BaseModel):
     data_retention: dict[str, str] | None = Field(default=None, alias="dataRetention")
     endpoints: dict[str, str] | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class AgentTrustMetrics(BaseModel):
@@ -1011,8 +966,7 @@ class AgentTrustMetrics(BaseModel):
     certifications: list[str] | None = None
     incident_history: list[dict[str, Any]] | None = Field(default=None, alias="incidentHistory")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class AgentCapabilities(BaseModel):
@@ -1038,5 +992,4 @@ class AgentProfile(BaseModel):
     trust_metrics: AgentTrustMetrics | None = Field(default=None, alias="trustMetrics")
     capabilities: AgentCapabilities | None = None
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)

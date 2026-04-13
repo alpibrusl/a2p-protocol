@@ -15,10 +15,13 @@ from a2p.core.consent import (
 )
 from a2p.core.profile import (
     add_memory,
+    archive_memory,
     create_profile,
     export_profile,
     get_filtered_profile,
     import_profile,
+    remove_memory,
+    update_memory,
 )
 from a2p.core.proposal import (
     add_proposal,
@@ -335,6 +338,40 @@ class A2PUserClient:
 
         episodic = self.profile.memories.episodic if self.profile.memories else []
         return episodic[-1] if episodic else None
+
+    async def update_memory(
+        self,
+        memory_id: str,
+        **kwargs: Any,
+    ) -> Memory:
+        """Update a memory"""
+        if not self.profile:
+            raise ValueError("No profile loaded")
+
+        self.profile = update_memory(self.profile, memory_id, **kwargs)
+        await self.save_profile()
+
+        episodic = self.profile.memories.episodic if self.profile.memories else []
+        return next((m for m in (episodic or []) if m.id == memory_id), None)
+
+    async def remove_memory(self, memory_id: str) -> None:
+        """Remove a memory"""
+        if not self.profile:
+            raise ValueError("No profile loaded")
+
+        self.profile = remove_memory(self.profile, memory_id)
+        await self.save_profile()
+
+    async def archive_memory(self, memory_id: str) -> Memory:
+        """Archive a memory"""
+        if not self.profile:
+            raise ValueError("No profile loaded")
+
+        self.profile = archive_memory(self.profile, memory_id)
+        await self.save_profile()
+
+        episodic = self.profile.memories.episodic if self.profile.memories else []
+        return next((m for m in (episodic or []) if m.id == memory_id), None)
 
     def get_pending_proposals(self) -> list[Proposal]:
         """Get pending proposals"""

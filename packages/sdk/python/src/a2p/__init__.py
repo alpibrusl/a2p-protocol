@@ -5,6 +5,7 @@ Python SDK for the a2p protocol, enabling user-owned profiles
 for AI agent interactions.
 """
 
+from a2p._version import PROTOCOL_VERSION
 from a2p.client import (
     A2PClient,
     A2PUserClient,
@@ -154,8 +155,7 @@ from a2p.utils.scope import (
     scope_matches,
 )
 
-__version__ = "0.1.0-alpha"
-PROTOCOL_VERSION = "0.1.0-alpha"
+__version__ = PROTOCOL_VERSION
 
 __all__ = [
     # Version

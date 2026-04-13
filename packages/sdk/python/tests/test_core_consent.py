@@ -121,23 +121,30 @@ class TestAccessEvaluation:
     def test_evaluate_access_priority(self):
         """Test access evaluation with policy priority"""
         profile = create_profile()
-        # Lower priority policy (denies)
+        # Lower priority (higher number) policy (denies)
         profile = add_policy(
             profile,
             agent_pattern="did:a2p:agent:*",
             permissions=[PermissionLevel.READ_SCOPED],
             allow=["a2p:preferences.*"],
             deny=["a2p:preferences.private"],
-            priority=100,
         )
-        # Higher priority policy (allows)
+        # Override first policy's priority
+        policies = list(profile.access_policies)
+        policies[0] = policies[0].model_copy(update={"priority": 100})
+        profile = profile.model_copy(update={"access_policies": policies})
+
+        # Higher priority (lower number) policy (allows)
         profile = add_policy(
             profile,
             agent_pattern="did:a2p:agent:*",
             permissions=[PermissionLevel.READ_SCOPED],
             allow=["a2p:preferences.*"],
-            priority=50,  # Higher priority
         )
+        # Override second policy's priority
+        policies = list(profile.access_policies)
+        policies[1] = policies[1].model_copy(update={"priority": 50})
+        profile = profile.model_copy(update={"access_policies": policies})
 
         result = evaluate_access(
             profile,
@@ -177,11 +184,10 @@ class TestConsentReceipt:
             permissions=[PermissionLevel.READ_SCOPED],
         )
 
-        assert receipt["userDid"] == "did:a2p:user:alice"
-        assert receipt["agentDid"] == "did:a2p:agent:test"
-        assert receipt["granted"] is True
-        assert "a2p:preferences" in receipt["grantedScopes"]
-        assert receipt["id"].startswith("rcpt_")
+        assert receipt.user_did == "did:a2p:user:alice"
+        assert receipt.agent_did == "did:a2p:agent:test"
+        assert "a2p:preferences" in receipt.granted_scopes
+        assert receipt.receipt_id.startswith("rcpt_")
 
     def test_create_consent_receipt_with_denied(self):
         """Test creating consent receipt with denied scopes"""
@@ -193,5 +199,5 @@ class TestConsentReceipt:
             permissions=[PermissionLevel.READ_SCOPED],
         )
 
-        assert "a2p:preferences" in receipt["grantedScopes"]
-        assert "a2p:health" in receipt["deniedScopes"]
+        assert "a2p:preferences" in receipt.granted_scopes
+        assert "a2p:health" in receipt.denied_scopes

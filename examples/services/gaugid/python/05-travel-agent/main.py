@@ -6,14 +6,14 @@ A complete working example that:
 1. Connects to Gaugid running locally (localhost:3001)
 2. Authenticates with Firebase Emulator (localhost:9099)
 3. Creates/loads a user profile with travel preferences
-4. Uses Vertex AI (a2p-common / europe-southwest1) to analyze conversations
+4. Uses Vertex AI (your-gcp-project / europe-southwest1) to analyze conversations
 5. Proposes travel-related memories based on conversation
 
 Prerequisites:
 - Gaugid running locally: docker-compose up -d (in a2p-cloud/)
 - Test user created: test@example.com / test123456
 - Google Cloud auth: gcloud auth application-default login
-- Vertex AI access to project a2p-common
+- Vertex AI access to project your-gcp-project
 
 Usage:
     python main.py
@@ -65,7 +65,7 @@ class Config:
     agent_name: str = "Travel Advisor"
 
     # Vertex AI
-    gcp_project: str = "a2p-common"
+    gcp_project: str = "your-gcp-project"
     gcp_location: str = "europe-southwest1"
     model: str = "gemini-2.5-flash-lite"
 

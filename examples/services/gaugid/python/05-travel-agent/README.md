@@ -61,7 +61,7 @@ Once implemented, agents can self-register via the API.
 gcloud auth application-default login
 
 # Verify you have access to the project
-gcloud projects describe a2p-common
+gcloud projects describe your-gcp-project
 ```
 
 ### 5. Install Dependencies
@@ -112,7 +112,7 @@ python main.py --profile-did "did:a2p:user:gaugid:YC4yUR9QW5vC"
 
 📡 Gaugid API: http://localhost:3001
 🔥 Firebase Emulator: localhost:9099
-☁️  Vertex AI: a2p-common / europe-southwest1
+☁️  Vertex AI: your-gcp-project / europe-southwest1
 
 🔐 Authenticating test@example.com with Firebase Emulator...
 ✅ Authenticated as test@example.com
@@ -125,7 +125,7 @@ python main.py --profile-did "did:a2p:user:gaugid:YC4yUR9QW5vC"
 📝 Setting up travel profile...
 ✅ Profile created with 5 travel memories
 
-🤖 Initializing Vertex AI (a2p-common / europe-southwest1)...
+🤖 Initializing Vertex AI (your-gcp-project / europe-southwest1)...
 ✅ Vertex AI initialized
 
 📖 Loading user profile from Gaugid...
@@ -236,7 +236,7 @@ If the profile doesn't exist, the example creates one with:
 ```python
 self.genai_client = genai.Client(
     vertexai=True,
-    project="a2p-common",
+    project="your-gcp-project",
     location="europe-southwest1",
 )
 ```
@@ -284,7 +284,7 @@ class Config:
     user_password: str = "test123456"
     
     # Vertex AI
-    gcp_project: str = "a2p-common"
+    gcp_project: str = "your-gcp-project"
     gcp_location: str = "europe-southwest1"
     model: str = "gemini-3.0-flash"
 ```
@@ -333,7 +333,7 @@ docker-compose logs firebase-emulator
 gcloud auth application-default login
 
 # Verify project access
-gcloud projects describe a2p-common
+gcloud projects describe your-gcp-project
 ```
 
 ### "No profiles found"
